@@ -30,9 +30,9 @@ Rancangan UI aplikasi yang berfokus pada pengalaman pengguna.
 
 ## 🛠️ Stack Teknologi
 
-- **Frontend:**
-- **Backend:**
-- **Database:**
+- **Frontend:** Bootstrap + Thymeleaf
+- **Backend:** Spring boot
+- **Database:** MySQL
 
 ---
 
