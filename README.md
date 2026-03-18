@@ -22,9 +22,9 @@ _Detail proses bisnis dan integrasi database._
 
 Rancangan UI aplikasi yang berfokus pada pengalaman pengguna.
 
-| Login Page |   Dashboard    |   Core Feature    |
-| :--------: | :------------: | :---------------: |
-| ![Login]() | ![Dashboard]() | ![Core_Feature]() |
+|         Login Page         |                Dashboard Admin                 |                 Dashboard Manager                  |
+| :------------------------: | :--------------------------------------------: | :------------------------------------------------: |
+| ![Login](assets/Login.png) | ![Dashboard_Admin](assets/Dashboard_Admin.png) | ![Dashboard_Manager](assets/Dashboard_Manager.png) |
 
 ---
 
