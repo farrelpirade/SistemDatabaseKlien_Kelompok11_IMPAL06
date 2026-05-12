@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlienTrack - Pengaturan Akun</title>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0052cc;
+            --bg-sidebar: #f0f4f9;
+            --bg-main: #f8faff;
+            --text-muted: #64748b;
+        }
+
+        [data-theme="dark"] {
+            --bg-sidebar: #1a1c1e;
+            --bg-main: #0f1113;
+            --card-bg: #1e2022;
+            --text-dark: #f8faff;
+            --text-muted: #94a3b8;
+            --input-bg: #2d2f31;
+            --border-color: #333639;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); margin: 0; }
+
+        /* Sidebar & Layout */
+        .sidebar { width: 260px; height: 100vh; background: var(--bg-sidebar); position: fixed; padding: 24px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .main-content { margin-left: 260px; padding: 40px; }
+        
+        .nav-link { color: var(--text-muted); font-weight: 500; padding: 12px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; margin-bottom: 4px; }
+        .nav-link.active { background: #e6f0ff; color: var(--primary-blue); }
+
+        /* profile */
+        .profile-circle-sm {
+            width: 35px; height: 35px; background: var(--primary-blue); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 12px; flex-shrink: 0;
+        }
+
+        /* Card Pengaturan */
+        .settings-card { background: white; border-radius: 20px; padding: 32px; border: 1px solid #eef2f7; }
+        
+        /* Foto Profil Utama (Tengah) */
+        .profile-main-container {
+            position: relative; width: 80px; height: 80px; flex-shrink: 0;
+        }
+        .profile-img-big {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #e2e8f0;
+        }
+        .edit-badge {
+            position: absolute; bottom: 0; right: 0; width: 26px; height: 26px;
+            background: var(--primary-blue); border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center; border: 2px solid white; cursor: pointer;
+        }
+
+        /* Form Styling */
+        .form-label-custom { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .input-custom { background: #f1f5f9; border: 1px solid transparent; border-radius: 12px; padding: 12px 16px; font-size: 14px; }
+        .input-custom:focus { background: white; border-color: var(--primary-blue); box-shadow: none; }
+
+        /* Right Side Cards */
+        .info-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #eef2f7; }
+        .icon-box-orange { width: 40px; height: 40px; background: #fff7ed; color: #c2410c; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        
+        .logout-box {
+            border: 1px dashed #fecaca; background: #fff5f5; border-radius: 16px; padding: 24px; text-align: center;
+        }
+        .btn-logout { 
+            width: 100%; background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px;
+            font-weight: 600; font-size: 14px; color: #dc2626; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .profile-widget { margin-top: auto; background: white; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-4 ps-2">
+            <div class="bg-primary p-2 rounded-3 me-2">
+                <i class="bi bi-wifi text-white fs-5"></i>
+            </div>
+            <h5 class="fw-bold mb-0">KlienTrack</h5>
+        </div>
+
+        <div class="nav-section-title">Menu Utama</div>
+        <a href="dashboard_manager.html" class="nav-link">
+            <i class="bi bi-grid-fill me-3"></i> Dashboard
+        </a>
+
+        <div class="nav-section-title">Laporan</div>
+        <a href="management_akun.html" class="nav-link">
+            <i class="bi bi-bar-chart-line me-3"></i> Management Akun
+        </a>
+
+        <div class="nav-section-title">Sistem</div>
+        <a href="pengaturan_akun_manager.html" class="nav-link active">
+            <i class="bi bi-gear me-3"></i> Pengaturan
+        </a>
+
+        <div class="profile-widget">
+            <div id="user-initial" class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px; font-size: 12px;">
+                --
+            </div>
+            <div>
+                <div id="user-fullname" class="fw-bold small">Memuat...</div>
+                <div id="user-role" class="text-muted" style="font-size: 11px;">Manager</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h5 class="fw-bold mb-0">Pengaturan</h5>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;"><i class="bi bi-bell"></i></button>
+                <div class="profile-circle-sm">--</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h3 class="fw-bold mb-1">Pengaturan Akun</h3>
+            <p class="text-muted small">Kelola informasi profil dan preferensi sistem Anda secara akurat.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="settings-card">
+                    <div class="d-flex align-items-center gap-4 mb-5">
+                        <div class="profile-main-container">
+                            <img src="https://via.placeholder.com/80" id="preview_foto" class="profile-img-big" alt="Avatar">
+                            <label for="upload_foto" class="edit-badge">
+                                <i class="bi bi-pencil-fill" style="font-size: 11px;"></i>
+                            </label>
+                            <input type="file" id="upload_foto" hidden accept="image/*">
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Informasi Profil</h6>
+                            <label for="upload_foto" class="text-primary small fw-bold" style="cursor: pointer;">
+                                <i class="bi bi-upload me-1"></i> Ubah Foto Profil
+                            </label>
+                        </div>
+                    </div>
+
+                    <form id="formPengaturan">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Nama Lengkap</label>
+                                <input type="text" class="form-control input-custom" id="set_fullname" placeholder="Contoh: Budi Santoso">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Alamat Email</label>
+                                <input type="email" class="form-control input-custom" id="set_email" placeholder="nama@klientrack.id">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-custom">Kata Sandi</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-custom border-end-0" id="set_password" style="border-radius: 12px 0 0 12px;" placeholder="Masukkan kata sandi baru">
+                                    <span class="input-group-text bg-light border-0" id="togglePass" style="border-radius: 0 12px 12px 0; cursor: pointer; background-color: #f1f5f9 !important;">
+                                        <i class="bi bi-eye text-muted"></i>
+                                    </span>
+                                </div>
+                                <small class="text-muted mt-2 d-block" style="font-size: 10px;">Gunakan minimal 8 karakter dengan kombinasi angka dan simbol.</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="info-card mb-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="icon-box-orange"><i class="bi bi-sliders"></i></div>
+                        <h6 class="fw-bold mb-0">Izin & Hak Akses</h6>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <div class="fw-bold small">Notifikasi Sistem</div>
+                            <div class="text-muted" style="font-size: 10px;">Terima alert via dashboard</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold small">Tema Gelap</div>
+                            <div class="text-muted" style="font-size: 10px;">Sesuaikan dengan mata Anda</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logout-box">
+                    <div class="text-danger fw-bold small mb-3" style="letter-spacing: 1px; font-size: 10px;">AKSI AKUN</div>
+                    <button class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i> Keluar <a href="login.html" class="nav-link"></a>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end align-items-center gap-3 mt-5">
+            <button type="button" onclick="history.back()" class="btn btn-link text-dark text-decoration-none fw-bold small">Batalkan Perubahan</button> 
+            <button type="submit" form="formPengaturan" class="btn btn-primary px-5 py-2 fw-bold" style="border-radius: 10px;">Simpan Perubahan</button>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi Toggle Password
+        document.getElementById('togglePass').addEventListener('click', function() {
+            const passInput = document.getElementById('set_password');
+            const icon = this.querySelector('i');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                passInput.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+
+        const darkModeToggle = document.getElementById('darkModeToggle'); 
+
+        if (localStorage.getItem('theme') === 'dark') {
+            if (darkModeToggle) darkModeToggle.checked = true;
+        }
+
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        }
+    </script>
+
+    
+</body>
+</html>

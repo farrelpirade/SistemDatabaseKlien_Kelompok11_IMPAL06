@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin</title>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-blue: #0052cc;
+        --bg-sidebar: #f0f4f9;
+        --bg-main: #f8faff;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+      }
+
+      [data-theme="dark"] {
+        --bg-sidebar: #1a1c1e;
+        --bg-main: #0f1113;
+        --card-bg: #1e2022;
+        --text-dark: #f8faff;
+        --text-muted: #94a3b8;
+        --border-color: #333639;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-dark);
+        margin: 0;
+      }
+
+      /* Sidebar Styling */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background: var(--bg-sidebar);
+        position: fixed;
+        padding: 24px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+      }
+      .main-content {
+        margin-left: 260px;
+        padding: 40px;
+      }
+
+      .nav-link {
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .nav-link.active {
+        background: #e6f0ff;
+        color: var(--primary-blue);
+      }
+
+      .main-content {
+        margin-left: 260px;
+        padding: 40px;
+        min-height: 100vh;
+      }
+
+      .profile-widget {
+        margin-top: auto;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .topbar {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        margin: -40px -40px 32px -40px;
+      }
+
+      .card-dashboard {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      .card-title-small {
+        font-size: 14px;
+        color: #6b7280;
+      }
+
+      .card-number {
+        font-size: 34px;
+        font-weight: 700;
+      }
+
+      .table thead th {
+        font-size: 12px;
+        color: #6b7280;
+        border: none;
+      }
+
+      .table tbody td {
+        border: none;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="d-flex align-items-center mb-2 ps-2">
+        <div class="bg-primary p-2 rounded-3 me-2">
+          <i class="bi bi-wifi text-white fs-5"></i>
+        </div>
+        <h5 class="fw-bold mb-0">KlienTrack</h5>
+      </div>
+
+      <div
+        class="nav-section-title mt-4 mb-2 ps-2 text-muted"
+        style="font-size: 11px; font-weight: 700; text-transform: uppercase"
+      >
+        Menu Utama
+      </div>
+      <a href="dashboard_admin.html" class="nav-link active">
+        <i class="bi bi-grid-fill me-3"></i> Dashboard
+      </a>
+      <a href="daftar_client_admin.html" class="nav-link">
+        <i class="bi bi-people me-3"></i> Daftar Klien
+      </a>
+      <a href="kontrak_admin.html" class="nav-link">
+        <i class="bi bi-file-earmark-text me-3"></i> Kontrak
+      </a>
+      <a href="paket_layanan_admin.html" class="nav-link">
+        <i class="bi bi-box-seam me-3"></i> Paket Layanan
+      </a>
+
+      <div
+        class="nav-section-title mt-4 mb-2 ps-2 text-muted"
+        style="font-size: 11px; font-weight: 700; text-transform: uppercase"
+      >
+        Sistem
+      </div>
+      <a href="pengaturan_akun_admin.html" class="nav-link">
+        <i class="bi bi-gear me-3"></i> Pengaturan
+      </a>
+
+      <div class="profile-widget mt-auto">
+        <div
+          class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold user-initial"
+          style="width: 40px; height: 40px; font-size: 12px"
+        >
+          --
+        </div>
+        <div>
+          <div class="fw-bold small user-fullname">Memuat...</div>
+          <div class="text-muted user-role" style="font-size: 11px">
+            Administrator
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div
+        class="topbar px-4 py-3 d-flex justify-content-between align-items-center"
+      >
+        <h5 class="fw-bold mb-0">Dashboard</h5>
+        <div class="d-flex align-items-center gap-3">
+          <div class="position-relative">
+            <i
+              class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+            ></i>
+            <input
+              type="text"
+              class="form-control bg-light border-0 ps-5"
+              placeholder="Cari klien, kontrak, paket..."
+              style="width: 300px; border-radius: 12px"
+            />
+          </div>
+          <button
+            class="btn btn-light position-relative rounded-circle border p-2 d-flex align-items-center justify-content-center"
+            style="width: 40px; height: 40px"
+          >
+            <i class="bi bi-bell"></i>
+          </button>
+          <div
+            class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold user-initial"
+            style="width: 40px; height: 40px; font-size: 13px; cursor: pointer"
+          >
+            --
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid p-0">
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="card card-dashboard p-3">
+              <div class="card-title-small">Total Klien Aktif</div>
+              <div class="card-number" id="stat_total_klien">0</div>
+              <small class="text-success"
+                ><i class="bi bi-graph-up-arrow"></i> Up to date</small
+              >
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card card-dashboard p-3">
+              <div class="card-title-small">Kontrak Berjalan</div>
+              <div class="card-number" id="stat_kontrak_jalan">0</div>
+              <small class="text-muted">Dari total terdaftar</small>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card card-dashboard p-3">
+              <div class="card-title-small">Kontrak Hampir Habis</div>
+              <div class="card-number text-warning" id="stat_kontrak_warning">
+                0
+              </div>
+              <small class="text-warning"
+                ><i class="bi bi-exclamation-triangle"></i> Cek segera</small
+              >
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card card-dashboard p-3">
+              <div class="card-title-small">Paket Terlaris</div>
+              <div
+                class="fw-bold fs-4"
+                id="stat_paket_laris"
+                style="margin-top: 5px; margin-bottom: 5px"
+              >
+                --
+              </div>
+              <small class="text-success" id="stat_paket_laris_jumlah"
+                >Data belum tersedia</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <div class="col-lg-8">
+            <div class="card card-dashboard p-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h6 class="fw-bold mb-0">Klien Terbaru</h6>
+                <a
+                  href="daftar_client_admin.html"
+                  class="small text-decoration-none"
+                  >Lihat semua</a
+                >
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>NAMA KLIEN</th>
+                      <th>KONTAK</th>
+                      <th>BERGABUNG</th>
+                      <th>STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabel_klien_terbaru">
+                    <tr>
+                      <td colspan="4" class="text-center text-muted py-5">
+                        <span
+                          class="spinner-border spinner-border-sm text-primary"
+                        ></span>
+                        Memuat data...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card card-dashboard p-4 h-100">
+              <h6 class="fw-bold mb-3">Distribusi Paket Aktif</h6>
+              <div
+                id="chart_container"
+                style="
+                  height: 250px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background: #f9fafb;
+                  border-radius: 12px;
+                  color: #9ca3af;
+                "
+              >
+                <!-- Chart akan digambar di sini -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="card card-dashboard p-4">
+              <h6 class="fw-bold mb-4">Aktivitas Terkini</h6>
+              <div class="text-muted py-3">
+                Fitur aktivitas akan dihubungkan di tahap selanjutnya.
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card card-dashboard p-4">
+              <h6 class="fw-bold mb-4">Kontrak Berakhir Segera</h6>
+              <div class="text-muted py-3" id="kontrak_warning_list">
+                Belum ada data kontrak yang mendekati batas waktu.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script Library -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Panggil File Helper API -->
+    <script src="js/api.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        // 1. TAMPILKAN PROFIL USER
+        const userName = localStorage.getItem("user_name") || "Admin";
+        const userRole = localStorage.getItem("user_role") || "Administrator";
+        const initials = userName.substring(0, 2).toUpperCase();
+
+        document
+          .querySelectorAll(".user-fullname")
+          .forEach((el) => (el.innerText = userName));
+        document
+          .querySelectorAll(".user-role")
+          .forEach((el) => (el.innerText = userRole));
+        document
+          .querySelectorAll(".user-initial")
+          .forEach((el) => (el.innerText = initials));
+
+        // 2. FETCH DATA DARI API
+        await loadDashboardData();
+      });
+
+      async function loadDashboardData() {
+        try {
+          // A. Fetch Data Klien
+          const klienData = await fetchAPI("/api/klien", "GET");
+          document.getElementById("stat_total_klien").innerText =
+            klienData.length;
+          document.getElementById("stat_kontrak_jalan").innerText =
+            klienData.length; // Asumsi sederhana kontrak jalan = klien terdaftar
+
+          // Isi Tabel Klien Terbaru (Ambil 4 Klien Terakhir)
+          const tbodyKlien = document.getElementById("tabel_klien_terbaru");
+          tbodyKlien.innerHTML = "";
+          if (klienData.length === 0) {
+            tbodyKlien.innerHTML =
+              '<tr><td colspan="4" class="text-center text-muted py-5">Belum ada data klien</td></tr>';
+          } else {
+            // Dibalik agar yang terbaru di atas, ambil 4 saja
+            const klienTerbaru = klienData.slice(-4).reverse();
+            klienTerbaru.forEach((klien) => {
+              tbodyKlien.innerHTML += `
+                          <tr>
+                              <td>
+                                  <div class="fw-bold text-dark">${klien.namaKlien}</div>
+                                  <div class="small text-muted">${klien.alamat}</div>
+                              </td>
+                              <td class="text-muted align-middle">${klien.noTelepon || "-"}</td>
+                              <td class="align-middle">${klien.tanggalDaftar || "-"}</td>
+                              <td class="align-middle"><span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">Aktif</span></td>
+                          </tr>
+                      `;
+            });
+          }
+
+          // B. Fetch Kontrak Hampir Habis
+          const kontrakWarningData = await fetchAPI(
+            "/api/kontrak/hampir-habis",
+            "GET",
+          );
+          document.getElementById("stat_kontrak_warning").innerText =
+            kontrakWarningData.length;
+
+          // C. Fetch Data Laporan (Distribusi Paket)
+          const laporanData = await fetchAPI("/api/laporan", "GET");
+
+          if (laporanData && laporanData.length > 0) {
+            // Hitung Paket Terlaris
+            const paketTerlaris = laporanData.reduce((prev, current) =>
+              prev.jumlah > current.jumlah ? prev : current,
+            );
+            document.getElementById("stat_paket_laris").innerText =
+              paketTerlaris.nama;
+            document.getElementById("stat_paket_laris_jumlah").innerText =
+              `${paketTerlaris.jumlah} Pelanggan`;
+
+            // Render Chart
+            renderChartPaket(laporanData);
+          } else {
+            document.getElementById("stat_paket_laris").innerText = "-";
+            document.getElementById("stat_paket_laris_jumlah").innerText =
+              "0 Pelanggan";
+            document.getElementById("chart_container").innerHTML =
+              "Belum ada data paket";
+          }
+        } catch (error) {
+          console.error("Gagal memuat data dashboard:", error);
+          document.getElementById("tabel_klien_terbaru").innerHTML =
+            '<tr><td colspan="4" class="text-center text-danger py-4">Gagal memuat data dari server.</td></tr>';
+        }
+      }
+
+      function renderChartPaket(data) {
+        const chartContainer = document.getElementById("chart_container");
+        chartContainer.innerHTML =
+          '<canvas id="paketChart" style="width: 100%; height: 100%;"></canvas>';
+        chartContainer.style.background = "transparent"; // Hapus background abu-abu
+
+        const ctxPaket = document.getElementById("paketChart");
+
+        const labels = data.map((item) => item.nama);
+        const values = data.map((item) => item.jumlah);
+
+        // Warna highlight untuk baris pertama, sisanya pudar
+        const bgColors = values.map((_, i) =>
+          i === 0 ? "#0052cc" : "#bfdbfe",
+        );
+
+        new Chart(ctxPaket.getContext("2d"), {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                data: values,
+                backgroundColor: bgColors,
+                borderRadius: 6,
+                barPercentage: 0.6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#1e293b",
+                padding: 10,
+                titleFont: { family: "Inter", size: 12 },
+                bodyFont: { family: "Inter", size: 13, weight: "bold" },
+                cornerRadius: 6,
+              },
+            },
+            scales: {
+              y: { display: false, beginAtZero: true },
+              x: {
+                grid: { display: false, drawBorder: false },
+                ticks: {
+                  color: "#64748b",
+                  font: { family: "Inter", size: 11, weight: "600" },
+                },
+              },
+            },
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

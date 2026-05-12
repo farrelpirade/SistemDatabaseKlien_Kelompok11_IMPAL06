@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlienTrack - Buat Kontrak Baru</title>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0052cc;
+            --bg-sidebar: #f0f4f9;
+            --bg-main: #f8faff;
+            --text-muted: #64748b;
+            --text-dark: #1e293b;
+        }
+
+        [data-theme="dark"] {
+            --bg-sidebar: #1a1c1e;
+            --bg-main: #0f1113;
+            --card-bg: #1e2022;
+            --text-dark: #f8faff;
+            --text-muted: #94a3b8;
+            --border-color: #333639;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-main); 
+            margin: 0; 
+            color: var(--text-dark);
+        }
+
+        .sidebar { width: 260px; height: 100vh; background: var(--bg-sidebar); position: fixed; padding: 24px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .main-content { margin-left: 260px; padding: 40px; }
+        
+        .nav-link { color: var(--text-muted); font-weight: 500; padding: 12px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; margin-bottom: 4px; }
+        .nav-link.active { background: #e6f0ff; color: var(--primary-blue); }
+        
+
+        .profile-widget {
+            margin-top: auto;
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* --- TOPBAR & CONTENT --- */
+        .main-content { margin-left: 260px; padding: 40px; }
+        
+        .profile-circle-sm {
+            width: 35px; height: 35px; background: var(--primary-blue); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 12px;
+        }
+
+        /* --- FORM STYLING --- */
+        .content-card {
+            background: white; border-radius: 20px; padding: 32px;
+            border: 1px solid #eef2f7;
+        }
+
+        .form-label-custom {
+            font-size: 11px; font-weight: 700; color: #94a3b8;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+        }
+
+        .input-custom {
+            background: #f1f5f9; border: 1px solid transparent;
+            border-radius: 12px; padding: 12px 16px; font-size: 14px;
+        }
+
+        .input-custom:focus {
+            background: white; border-color: var(--primary-blue); box-shadow: none;
+        }
+
+        /* --- SUMMARY RIGHT SIDE --- */
+        .summary-card {
+            background: white; border-radius: 20px; border: 1px solid #eef2f7; padding: 24px;
+        }
+
+        .revenue-box {
+            background: #f8faff; border-radius: 16px; padding: 20px;
+            margin-top: 15px; border: 1px solid #e6f0ff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-2 ps-2">
+            <div class="bg-primary p-2 rounded-3 me-2">
+                <i class="bi bi-wifi text-white fs-5"></i>
+            </div>
+            <h5 class="fw-bold mb-0">KlienTrack</h5>
+        </div>
+
+       <div class="nav-section-title">Menu Utama</div>
+        <a href="dashboard_admin.html" class="nav-link">
+            <i class="bi bi-grid-fill me-3"></i> Dashboard
+        </a>
+        <a href="daftar_client_admin.html" class="nav-link">
+            <i class="bi bi-people me-3"></i> Daftar Klien
+        </a>
+        <a href="kontrak_admin.html" class="nav-link active">
+            <i class="bi bi-file-earmark-text me-3"></i> Kontrak
+        </a>
+        <a href="paket_layanan_admin.html" class="nav-link">
+            <i class="bi bi-box-seam me-3"></i> Paket Layanan
+        </a>
+
+        <div class="nav-section-title">Sistem</div>
+        <a href="pengaturan_akun_admin.html" class="nav-link">
+            <i class="bi bi-gear me-3"></i> Pengaturan
+        </a>
+
+        <div class="profile-widget">
+            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px; font-size: 12px;">
+                --
+            </div>
+            <div>
+                <div class="fw-bold small">Memuat...</div>
+                <div class="text-muted" style="font-size: 11px;">Administrator</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Kontrak</span>
+                <i class="bi bi-chevron-right text-muted" style="font-size: 10px;"></i>
+                <span class="small fw-bold">Tambah Kontrak</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;"><i class="bi bi-bell"></i></button>
+                <div id="header_initial" class="profile-circle-sm">--</div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="content-card">
+                    <h4 class="fw-bold mb-1">Informasi Kontrak Baru</h4>
+                    <p class="text-muted small mb-5">Lengkapi data di bawah ini untuk pendaftaran layanan baru.</p>
+
+                    <form id="formTambahKontrak">
+                        <div class="mb-4">
+                            <label class="form-label-custom">Pilih Klien</label>
+                            <select class="form-select input-custom" id="input_klien">
+                                <option value="" selected disabled>-- Pilih Nama Klien --</option>
+                            </select>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Paket Layanan</label>
+                                <select class="form-select input-custom" id="input_paket">
+                                    <option value="" selected disabled>-- Pilih Paket --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Tipe Perangkat/Modem</label>
+                                <select class="form-select input-custom" id="input_modem">
+                                    <option value="" selected disabled>-- Pilih Modem --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Tanggal Aktif</label>
+                                <input type="date" class="form-control input-custom" id="input_tgl_mulai">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Tanggal Berakhir</label>
+                                <input type="date" class="form-control input-custom" id="input_tgl_selesai">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label-custom">Harga Kontrak (Rp)</label>
+                            <input type="number" class="form-control input-custom" id="input_harga" placeholder="0">
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 border-top pt-4">
+                            <button type="button" class="btn btn-link text-dark text-decoration-none fw-bold small">Batal</button>
+                            <button type="button" onclick="triggerConfirm()" class="btn btn-primary px-5 py-2 fw-bold" style="border-radius: 12px;">Simpan Kontrak</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h6 class="fw-bold mb-3">RINGKASAN</h6>
+                    <div class="revenue-box">
+                        <div class="text-muted small fw-medium mb-1">TOTAL BIAYA</div>
+                        <h4 class="fw-bold mb-0" id="summary_total_biaya">Rp --</h4>
+                    </div>
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Durasi Kontrak</span>
+                            <span class="fw-bold small" id="summary_durasi">-- Bulan</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">PPN (11%)</span>
+                            <span class="fw-bold small" id="summary_ppn">Rp --</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none; padding: 40px 20px;">
+                <div class="modal-body text-center">
+                    <div style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 30px;">
+                        Apakah anda yakin ingin membuat kontrak ?
+                    </div>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn" id="btnConfirmYes" 
+                            style="background-color: #0052cc; color: white; border-radius: 8px; padding: 10px 60px; font-weight: 600;">
+                            YA
+                        </button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" 
+                            style="background-color: #0052cc; color: white; border-radius: 8px; padding: 10px 60px; font-weight: 600;">
+                            TIDAK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const modalKonfirmasi = new bootstrap.Modal(document.getElementById('confirmModal'));
+
+        function triggerConfirm() {
+            modalKonfirmasi.show();
+        }
+
+        document.getElementById('btnConfirmYes').addEventListener('click', function() {
+            modalKonfirmasi.hide();
+            // Form submission logic
+            document.getElementById('formTambahKontrak').submit();
+        });
+    </script>
+
+</body>
+</html>

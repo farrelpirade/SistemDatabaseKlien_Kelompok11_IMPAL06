@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KlienTrack - Manajemen Paket Layanan</title>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-blue: #0052cc;
+        --bg-sidebar: #f0f4f9;
+        --bg-main: #f8faff;
+        --text-muted: #64748b;
+        --text-dark: #1e293b;
+      }
+
+      [data-theme="dark"] {
+        --bg-sidebar: #1a1c1e;
+        --bg-main: #0f1113;
+        --card-bg: #1e2022;
+        --text-dark: #f8faff;
+        --text-muted: #94a3b8;
+        --border-color: #333639;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-main);
+        margin: 0;
+        color: var(--text-dark);
+      }
+
+      /* --- SIDEBAR --- */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background: var(--bg-sidebar);
+        position: fixed;
+        padding: 24px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+      }
+      .nav-link {
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .nav-link.active {
+        background: #e6f0ff;
+        color: var(--primary-blue);
+      }
+
+      .profile-widget {
+        margin-top: auto;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #e2e8f0;
+      }
+
+      /* --- MAIN CONTENT --- */
+      .main-content {
+        margin-left: 260px;
+        padding: 40px;
+      }
+
+      /* --- STAT CARDS --- */
+      .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid #eef2f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+
+      /* --- TABLE STYLING --- */
+      .table-container {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #eef2f7;
+        overflow: hidden;
+        margin-top: 24px;
+      }
+      .table thead th {
+        background: #f8faff;
+        padding: 18px 24px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        border: none;
+      }
+      .table tbody td {
+        padding: 18px 24px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f8faff;
+        font-size: 14px;
+      }
+
+      .pkg-icon-frame {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .badge-status {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-active {
+        background: #f0fdf4;
+        color: #22c55e;
+      }
+      .status-inactive {
+        background: #fef2f2;
+        color: #ef4444;
+      }
+
+      .search-input {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px 15px;
+        font-size: 14px;
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="d-flex align-items-center mb-2 ps-2">
+        <div class="bg-primary p-2 rounded-3 me-2">
+          <i class="bi bi-wifi text-white fs-5"></i>
+        </div>
+        <h5 class="fw-bold mb-0">KlienTrack</h5>
+      </div>
+
+      <div class="nav-section-title">Menu Utama</div>
+      <a href="dashboard_admin.html" class="nav-link">
+        <i class="bi bi-grid-fill me-3"></i> Dashboard
+      </a>
+      <a href="daftar_client_admin.html" class="nav-link">
+        <i class="bi bi-people me-3"></i> Daftar Klien
+      </a>
+      <a href="kontrak_admin.html" class="nav-link">
+        <i class="bi bi-file-earmark-text me-3"></i> Kontrak
+      </a>
+      <a href="paket_layanan_admin.html" class="nav-link active">
+        <i class="bi bi-box-seam me-3"></i> Paket Layanan
+      </a>
+
+      <div class="nav-section-title">Sistem</div>
+      <a href="pengaturan_akun_admin.html" class="nav-link">
+        <i class="bi bi-gear me-3"></i> Pengaturan
+      </a>
+
+      <div class="profile-widget">
+        <div
+          class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+          style="width: 40px; height: 40px; font-size: 12px"
+        >
+          --
+        </div>
+        <div>
+          <div class="fw-bold small">Memuat...</div>
+          <div class="text-muted" style="font-size: 11px">Administrator</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+          <h3 class="fw-bold mb-1">Manajemen Paket Layanan</h3>
+          <p class="text-muted small mb-0">
+            Atur dan pantau semua paket internet yang tersedia.
+          </p>
+        </div>
+        <div class="d-flex gap-3">
+          <div class="search-input d-flex align-items-center gap-2">
+            <i class="bi bi-search text-muted"></i>
+            <input
+              type="text"
+              class="border-0 w-100"
+              style="outline: none"
+              placeholder="Cari paket..."
+            />
+          </div>
+          <a href="tambah_paket_admin.html" class="text-decoration-none">
+            <button
+              class="btn btn-primary px-4 fw-bold"
+              style="border-radius: 12px"
+            >
+              <i class="bi bi-plus-lg me-2"></i> Tambah Paket
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="stat-card">
+            <div>
+              <div class="text-muted small fw-bold mb-1">TOTAL PAKET</div>
+              <h3 class="fw-bold mb-0" id="stat_total_paket">0</h3>
+            </div>
+            <div class="stat-icon bg-light text-primary">
+              <i class="bi bi-archive"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card">
+            <div>
+              <div class="text-muted small fw-bold mb-1">PAKET AKTIF</div>
+              <h3
+                class="fw-bold mb-0"
+                id="stat_paket_aktif"
+                style="color: #22c55e"
+              >
+                0
+              </h3>
+            </div>
+            <div class="stat-icon" style="background: #f0fdf4; color: #22c55e">
+              <i class="bi bi-check-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>NAMA PAKET</th>
+              <th>KATEGORI</th>
+              <th>HARGA</th>
+              <th>STATUS</th>
+              <th>PENGGUNA</th>
+              <th class="text-center">AKSI</th>
+            </tr>
+          </thead>
+          <tbody id="container_paket">
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="pkg-icon-frame"
+                    style="background: #eef2f7; color: var(--primary-blue)"
+                    id="pkg_icon_var"
+                  >
+                    <i class="bi bi-globe"></i>
+                  </div>
+                  <div class="fw-bold" id="pkg_name_var">-- Nama Paket --</div>
+                </div>
+              </td>
+              <td class="text-muted" id="pkg_category_var">-- Kategori --</td>
+              <td class="fw-bold" id="pkg_price_var">Rp --</td>
+              <td>
+                <span class="badge-status status-active" id="pkg_status_var"
+                  >Aktif</span
+                >
+              </td>
+              <td class="text-muted">
+                <span id="pkg_usage_var">0</span> Klien
+              </td>
+              <td class="text-center">
+                <button class="btn btn-link text-primary p-1">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-link text-danger p-1">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Masukkan file API helper -->
+    <script src="js/api.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Tampilkan nama admin di sidebar/topbar
+        document.querySelector(".profile-widget .fw-bold.small").innerText =
+          localStorage.getItem("user_name") || "Admin";
+
+        await loadDataPaket();
+      });
+
+      async function loadDataPaket() {
+        const tableBody = document.getElementById("container_paket");
+        const statTotal = document.getElementById("stat_total_paket");
+        const statAktif = document.getElementById("stat_paket_aktif");
+
+        tableBody.innerHTML =
+          '<tr><td colspan="6" class="text-center py-4"><span class="spinner-border text-primary"></span><br>Memuat data...</td></tr>';
+
+        try {
+          // GET ke endpoint /api/paket
+          const dataPaket = await fetchAPI("/api/paket", "GET");
+
+          tableBody.innerHTML = ""; // Kosongkan tabel
+
+          let countAktif = 0;
+
+          if (dataPaket.length === 0) {
+            tableBody.innerHTML =
+              '<tr><td colspan="6" class="text-center text-muted">Belum ada data paket layanan.</td></tr>';
+          } else {
+            dataPaket.forEach((paket) => {
+              // Hitung statistik
+              if (paket.statusPaketId === 1) countAktif++;
+
+              const statusBadge =
+                paket.statusPaketId === 1
+                  ? '<span class="badge-status status-active">Aktif</span>'
+                  : '<span class="badge-status status-inactive">Tidak Aktif</span>';
+
+              // Buat baris tabel
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="pkg-icon-frame" style="background: #eef2f7; color: var(--primary-blue);">
+                                    <i class="bi bi-hdd-network"></i>
+                                </div>
+                                <div class="fw-bold">${paket.namaPaket}</div>
+                            </div>
+                        </td>
+                        <td class="text-muted">${paket.kecepatanMbps} Mbps</td>
+                        <td class="fw-bold">Rp ${paket.harga.toLocaleString("id-ID")}</td>
+                        <td>${statusBadge}</td>
+                        <td class="text-muted">-- Klien</td>
+                        <td class="text-center">
+                            <button class="btn btn-link text-primary p-1"><i class="bi bi-pencil-square"></i></button>
+                            <button class="btn btn-link text-danger p-1" onclick="hapusPaket(${paket.paketId})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+              tableBody.appendChild(tr);
+            });
+          }
+
+          // Update statistik atas
+          statTotal.innerText = dataPaket.length;
+          statAktif.innerText = countAktif;
+        } catch (error) {
+          tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Gagal memuat data: ${error.message}</td></tr>`;
+        }
+      }
+
+      // Fungsi Hapus
+      async function hapusPaket(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus paket ini?")) {
+          try {
+            await fetchAPI(`/api/paket/${id}`, "DELETE");
+            alert("Paket berhasil dihapus");
+            loadDataPaket(); // Refresh tabel
+          } catch (error) {
+            alert("Gagal menghapus: " + error.message);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
