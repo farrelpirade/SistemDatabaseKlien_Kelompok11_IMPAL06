@@ -281,7 +281,7 @@
             // Sengaja dikosongkan agar admin tidak melihat hash password
             document.getElementById("edit_password").value = "";
             document.getElementById("edit_password").placeholder =
-              "Ketik password baru (opsional)";
+              "Ketik password baru";
           }
         } catch (error) {
           console.error("Gagal memuat detail akun:", error);
@@ -292,6 +292,8 @@
       async function saveAccountChanges(event) {
         event.preventDefault();
 
+
+        
         const btnSubmit = document.querySelector('button[type="submit"]');
         const originalText = btnSubmit.innerHTML;
         btnSubmit.innerHTML = "Menyimpan...";

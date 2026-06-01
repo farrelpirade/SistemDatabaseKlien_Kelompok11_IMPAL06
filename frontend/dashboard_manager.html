@@ -326,62 +326,131 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
     <script>
-      const ctx = document.getElementById("trafficChart").getContext("2d");
-      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-      gradient.addColorStop(0, "rgba(0, 82, 204, 0.2)");
-      gradient.addColorStop(1, "rgba(0, 82, 204, 0)");
+      document.addEventListener("DOMContentLoaded", async function () {
+        // 1. Inisialisasi Profil User
+        const userName = localStorage.getItem("user_name") || "Manager";
+        const initials = userName.substring(0, 2).toUpperCase();
 
-      const trafficChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [
-            "JAN 01",
-            "FEB 08",
-            "MAR 15",
-            "APRL 22",
-            "MEI 30",
-            "JUN 30",
-            "JUL 30",
-            "AGST 30",
-            "SEPT 30",
-            "OKT 30",
-            "NOV 30",
-            "DES 30",
-          ],
-          datasets: [
-            {
-              label: "Traffic",
-              data: [], // Kosongkan data
-              borderColor: "#0052cc",
-              borderWidth: 3,
-              fill: true,
-              backgroundColor: gradient,
-              tension: 0.4,
-              pointRadius: 0,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: { color: "#f1f5f9" },
-              ticks: { color: "#94a3b8" },
-            },
-            x: { grid: { display: false }, ticks: { color: "#94a3b8" } },
-          },
-        },
+        document.getElementById("user-fullname").innerText = userName;
+        document.getElementById("user-initial").innerText = initials;
+        document.getElementById("user-header-initial").innerText = initials;
+
+        // 2. Load Semua Data Dashboard secara paralel
+        await Promise.all([loadDashboardStats(), loadStatistikGrafik()]);
       });
-    </script>
 
-    <script>
+      // --- FUNGSI MENGAMBIL DATA KARTU STATISTIK ---
+      async function loadDashboardStats() {
+        try {
+          // Fetch data dari endpoint yang relevan
+          const [klienData, kontrakData, kontrakWarning, laporanData] =
+            await Promise.all([
+              fetchAPI("/api/klien", "GET"),
+              fetchAPI("/api/kontrak", "GET"),
+              fetchAPI("/api/kontrak/hampir-habis", "GET"),
+              fetchAPI("/api/laporan", "GET"),
+            ]);
+
+          // Update Total Klien
+          document.getElementById("count-total-klien").innerText =
+            klienData.length;
+          document.getElementById("total-registered").innerText =
+            klienData.length;
+
+          // Update Kontrak Berjalan (Status ID 1 = Aktif)
+          const aktif = kontrakData.filter(
+            (k) => k.statusKontrakId === 1,
+          ).length;
+          document.getElementById("count-kontrak-aktif").innerText = aktif;
+
+          // Update Kontrak Hampir Habis
+          document.getElementById("count-kontrak-warning").innerText =
+            kontrakWarning.length;
+          document.getElementById("warning-days").innerText = "7"; // Asumsi default 7 hari
+
+          // Update Paket Terlaris
+          if (laporanData && laporanData.length > 0) {
+            const terlaris = laporanData.reduce((prev, curr) =>
+              prev.jumlah > curr.jumlah ? prev : curr,
+            );
+            document.getElementById("best-package-name").innerText =
+              terlaris.nama;
+            document.getElementById("best-package-count").innerText =
+              terlaris.jumlah;
+            document.getElementById("best-package-speed").innerText =
+              terlaris.speed ? terlaris.speed + " Mbps" : "--";
+          }
+        } catch (error) {
+          console.error("Gagal memuat data statistik:", error);
+        }
+      }
+
+      // --- FUNGSI MENGAMBIL DATA GRAFIK ---
+      async function loadStatistikGrafik() {
+        try {
+          const userId = localStorage.getItem("user_id");
+          const dataGrafik = await fetchAPI(
+            "/api/dashboard/statistik",
+            "GET",
+            null,
+            { "X-Requester-Id": userId },
+          );
+
+          const labels = dataGrafik.map((item) =>
+            item.bulan.substring(0, 3).toUpperCase(),
+          );
+          const values = dataGrafik.map((item) => item.jumlah);
+
+          renderChart(labels, values);
+        } catch (error) {
+          console.error("Gagal memuat grafik:", error);
+          renderChart(["JAN", "FEB", "MAR"], [0, 0, 0]);
+        }
+      }
+
+      // --- FUNGSI RENDER CHART ---
+      function renderChart(labels, dataValue) {
+        const ctx = document.getElementById("trafficChart").getContext("2d");
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, "rgba(0, 82, 204, 0.2)");
+        gradient.addColorStop(1, "rgba(0, 82, 204, 0)");
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Jumlah Klien",
+                data: dataValue,
+                borderColor: "#0052cc",
+                borderWidth: 3,
+                fill: true,
+                backgroundColor: gradient,
+                tension: 0.4,
+                pointRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: "#f1f5f9" } },
+              x: { grid: { display: false } },
+            },
+          },
+        });
+      }
+
+      // --- FUNGSI CETAK LAPORAN ---
       document
         .getElementById("btn-print-report")
         .addEventListener("click", function () {
+          // 1. Ambil data dari statistik yang sudah dimuat
           const reportData = {
             totalKlien: document.getElementById("count-total-klien").innerText,
             kontrakJalan: document.getElementById("count-kontrak-aktif")
@@ -396,136 +465,44 @@
             }),
           };
 
-          const printWindow = window.open("", "_blank");
+          // 2. Ambil grafik sebagai image data
+          const canvas = document.getElementById("trafficChart");
+          const chartImage = canvas.toDataURL("image/png");
+
+          // 3. Buat window baru untuk cetak
+          const printWindow = window.open("", "_blank", "width=800,height=600");
+
           printWindow.document.write(`
-        <html>
-        <head>
-            <title>Cetak Laporan KlienTrack</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <style>
-                body { padding: 40px; font-family: 'Inter', sans-serif; }
-                .report-header { border-bottom: 2px solid #0052cc; margin-bottom: 30px; padding-bottom: 10px; }
-                .stat-box { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc; }
-                @media print { .no-print { display: none; } }
-            </style>
-        </head>
-        <body>
-            <div class="report-header d-flex justify-content-between align-items-center">
-                <h2 style="color: #0052cc;">Laporan Statistik KlienTrack</h2>
-                <span class="text-muted small">Dicetak: ${reportData.tanggal}</span>
-            </div>
-
-            <div class="row g-4 mb-5">
-                <div class="col-3"><div class="stat-box"><h6>Klien Aktif</h6><h3>${reportData.totalKlien}</h3></div></div>
-                <div class="col-3"><div class="stat-box"><h6>Kontrak Jalan</h6><h3>${reportData.kontrakJalan}</h3></div></div>
-                <div class="col-3"><div class="stat-box"><h6>Hampir Habis</h6><h3 class="text-warning">${reportData.hampirHabis}</h3></div></div>
-                <div class="col-3"><div class="stat-box"><h6>Paket Terlaris</h6><h4 class="fs-6">${reportData.paketLaris}</h4></div></div>
-            </div>
-
-            <h5>Analisis Trafik Data</h5>
-            <p class="text-muted small">Grafik performa 30 hari terakhir.</p>
-            <img src="${document.getElementById("trafficChart").toDataURL()}" style="width: 100%; border: 1px solid #eee; border-radius: 10px;">
-            
-            <div class="mt-5 pt-5 text-center text-muted small">
-                <hr> Laporan otomatis KlienTrack System &copy; 2026
-            </div>
-
-            <script>
-                window.onload = function() { window.print(); window.close(); };
-            <\/script>
-        </body>
-        </html>
-    `);
+          <html>
+          <head>
+              <title>Laporan Statistik KlienTrack</title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+              <style>
+                  body { padding: 40px; font-family: 'Inter', sans-serif; }
+                  .report-header { border-bottom: 2px solid #0052cc; margin-bottom: 30px; padding-bottom: 10px; }
+                  .stat-box { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc; }
+                  .chart-img { width: 100%; margin-top: 20px; border: 1px solid #ddd; padding: 10px; }
+              </style>
+          </head>
+          <body>
+              <div class="report-header">
+                  <h2>Laporan Statistik KlienTrack</h2>
+                  <small class="text-muted">Dicetak pada: ${reportData.tanggal}</small>
+              </div>
+              <div class="row g-3 mb-5">
+                  <div class="col-3"><div class="stat-box"><h6>Klien Aktif</h6><h3>${reportData.totalKlien}</h3></div></div>
+                  <div class="col-3"><div class="stat-box"><h6>Kontrak Jalan</h6><h3>${reportData.kontrakJalan}</h3></div></div>
+                  <div class="col-3"><div class="stat-box"><h6>Hampir Habis</h6><h3 class="text-warning">${reportData.hampirHabis}</h3></div></div>
+                  <div class="col-3"><div class="stat-box"><h6>Paket Terlaris</h6><h4 class="fs-6 mt-2">${reportData.paketLaris}</h4></div></div>
+              </div>
+              <h5>Grafik Statistik Traffic</h5>
+              <img src="${chartImage}" class="chart-img">
+              <script>window.onload = function() { window.print(); };<\/script>
+          </body>
+          </html>
+        `);
           printWindow.document.close();
         });
-    </script>
-    <!-- Masukkan file API helper -->
-    <!-- Masukkan file API helper -->
-    <script src="js/api.js"></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", async function () {
-        // Tampilkan info user
-        document.getElementById("user-fullname").innerText =
-          localStorage.getItem("user_name") || "Manager";
-
-        await loadStatistikPertumbuhan();
-      });
-
-      async function loadStatistikPertumbuhan() {
-        try {
-          // Ambil userId dari localStorage (hasil dari login yang baru)
-          const userId = localStorage.getItem("user_id");
-
-          // Cek jika userId tidak ada (user belum login)
-          if (!userId) {
-            console.error("User ID tidak ditemukan. Harap login kembali.");
-            return;
-          }
-
-          const dataGrafik = await fetchAPI(
-            "/api/dashboard/statistik",
-            "GET",
-            null,
-            {
-              "X-Requester-Id": userId,
-            },
-          );
-
-          // Ekstrak data dari response backend [{bulan: "JANUARY", jumlah: 10}, ...]
-          const labelBulan = dataGrafik.map((item) =>
-            item.bulan.substring(0, 3).toUpperCase(),
-          );
-          const dataJumlah = dataGrafik.map((item) => item.jumlah);
-
-          renderChart(labelBulan, dataJumlah);
-        } catch (error) {
-          console.error("Gagal memuat grafik:", error);
-          // Tetap render chart kosong jika error
-          renderChart(["JAN", "FEB", "MAR"], [0, 0, 0]);
-        }
-      }
-
-      function renderChart(labels, dataValue) {
-        const ctx = document.getElementById("trafficChart").getContext("2d");
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, "rgba(0, 82, 204, 0.2)");
-        gradient.addColorStop(1, "rgba(0, 82, 204, 0)");
-
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: "Jumlah Klien",
-                data: dataValue, // Data dinamis dari backend
-                borderColor: "#0052cc",
-                borderWidth: 3,
-                fill: true,
-                backgroundColor: gradient,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: "#ffffff",
-                pointBorderColor: "#0052cc",
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              y: {
-                beginAtZero: true,
-                grid: { color: "#f1f5f9" },
-                ticks: { stepSize: 1 },
-              },
-              x: { grid: { display: false } },
-            },
-          },
-        });
-      }
     </script>
   </body>
 </html>
