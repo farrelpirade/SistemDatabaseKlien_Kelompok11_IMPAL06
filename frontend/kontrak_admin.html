@@ -293,7 +293,7 @@
                         <td class="fw-bold text-primary">Rp ${kontrak.hargaKontrak.toLocaleString('id-ID')}</td>
                         <td>${statusBadge}</td>
                         <td class="text-end">
-                            <button class="btn-edit-table" onclick="alert('Fitur mutasi status kontrak siap dikembangkan pada fase lanjutan')">Manage</button>
+                            <a href="edit_kontrak_admin.html?id=${kontrak.kontrakId}" class="btn-edit-table text-decoration-none">Manage</a>
                         </td>
                     </tr>
                 `;

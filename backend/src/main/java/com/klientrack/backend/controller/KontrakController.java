@@ -51,4 +51,31 @@ public class KontrakController {
     public ResponseEntity<?> getSemuaKontrak() {
         return ResponseEntity.ok(kontrakRepository.findAll());
     }
+
+    // Tambahkan endpoint GET by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDetailKontrak(@PathVariable Integer id) {
+        return kontrakRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Tambahkan endpoint PUT untuk Edit Kontrak
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editKontrak(
+            @PathVariable Integer id,
+            @Valid @RequestBody KontrakRequestDTO dto) {
+
+        return kontrakRepository.findById(id).map(kontrak -> {
+            // Klien ID tidak diubah karena kontrak mengikat klien yang sama
+            kontrak.setPaketId(dto.paketId());
+            kontrak.setTanggalMulai(dto.tanggalMulai());
+            kontrak.setTanggalSelesai(dto.tanggalSelesai());
+            kontrak.setHargaKontrak(dto.hargaKontrak());
+            kontrak.setTipeModemId(dto.tipeModemId());
+
+            kontrakRepository.save(kontrak);
+            return ResponseEntity.ok("Kontrak berhasil diperbarui");
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }
