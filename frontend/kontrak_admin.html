@@ -249,5 +249,72 @@
         </div>
     </div>
 
+    <script src="js/api.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        // Render Identitas User
+        const userName = localStorage.getItem("user_name") || "Admin";
+        document.getElementById("header_initial").innerText = userName.substring(0, 2).toUpperCase();
+        document.querySelector(".profile-widget .bg-primary").innerText = userName.substring(0, 2).toUpperCase();
+        document.querySelector(".profile-widget .fw-bold.small").innerText = userName;
+
+        await loadDaftarKontrak();
+    });
+
+    async function loadDaftarKontrak() {
+        const tbody = document.getElementById("table_body");
+        try {
+            const daftarKontrak = await fetchAPI("/api/kontrak", "GET");
+            tbody.innerHTML = "";
+
+            if (daftarKontrak.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Belum ada kontrak terdaftar.</td></tr>';
+                return;
+            }
+
+            let totalRevenue = 0;
+            let kontrakAktifCount = 0;
+
+            daftarKontrak.forEach(kontrak => {
+                totalRevenue += kontrak.hargaKontrak;
+                if (kontrak.statusKontrakId === 1) kontrakAktifCount++;
+
+                const statusBadge = kontrak.statusKontrakId === 1 
+                    ? '<span class="badge-status bg-success-subtle text-success px-2 py-1 rounded-pill">Aktif</span>' 
+                    : '<span class="badge-status bg-warning-subtle text-warning px-2 py-1 rounded-pill">Selesai/Batal</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="id-link">#KTR-${kontrak.kontrakId}</span></td>
+                        <td class="fw-bold">Klien ID: ${kontrak.klienId}</td>
+                        <td>Paket ID: ${kontrak.paketId}</td>
+                        <td class="small">${kontrak.tanggalMulai} s/d <br><span class="text-danger fw-bold">${kontrak.tanggalSelesai}</span></td>
+                        <td>${kontrak.tipeModemId === 1 ? 'Sewa' : 'Beli'}</td>
+                        <td class="fw-bold text-primary">Rp ${kontrak.hargaKontrak.toLocaleString('id-ID')}</td>
+                        <td>${statusBadge}</td>
+                        <td class="text-end">
+                            <button class="btn-edit-table" onclick="alert('Fitur mutasi status kontrak siap dikembangkan pada fase lanjutan')">Manage</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Update nilai metrik di Card Atas
+            document.getElementById("stat_total").innerText = kontrakAktifCount;
+            document.getElementById("stat_revenue").innerText = "Rp " + totalRevenue.toLocaleString('id-ID');
+            document.getElementById("stat_warning").innerText = daftarKontrak.length - kontrakAktifCount;
+            document.getElementById("stat_durasi").innerText = "6-12 Bln";
+
+            // Update text footer data info count
+            document.getElementById("total_res").innerText = daftarKontrak.length;
+            document.getElementById("start_res").innerText = 1;
+            document.getElementById("end_res").innerText = daftarKontrak.length;
+
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">Gagal memuat data kontrak: ${error.message}</td></tr>`;
+        }
+    }
+</script>
+
 </body>
 </html>
