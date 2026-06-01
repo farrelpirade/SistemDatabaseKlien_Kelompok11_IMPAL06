@@ -346,12 +346,14 @@
 
             <div class="d-grid gap-2 mt-5">
               <button
+                onclick="editKlienAction()"
                 class="btn btn-primary fw-bold py-2"
                 style="border-radius: 10px"
               >
                 <i class="bi bi-pencil-square me-2"></i> Edit Klien
               </button>
               <button
+                onclick="hapusKlienAction()"
                 class="btn btn-outline-danger fw-bold py-2"
                 style="border-radius: 10px"
               >
@@ -605,6 +607,42 @@
       document
         .querySelector(".btn-primary.px-4")
         .setAttribute("onclick", "simpanCatatanKomunikasi()");
+
+      // --- FUNGSI EDIT KLIEN ---
+      function editKlienAction() {
+        // Karena aplikasi ini menggunakan skema halaman terpisah untuk edit,
+        // kita arahkan user ke halaman edit klien dengan membawa parameter ID-nya.
+        // Pastikan Anda sudah membuat file edit_client_admin.html
+        window.location.href = `edit_client_admin.html?id=${klienId}`;
+      }
+
+      // --- FUNGSI HAPUS KLIEN ---
+      async function hapusKlienAction() {
+        // Tampilkan konfirmasi agar admin tidak tidak sengaja menekan tombol hapus
+        const konfirmasi = confirm(
+          "Apakah Anda yakin ingin menonaktifkan klien ini? Data kontrak dan riwayat mungkin akan ikut terpengaruh.",
+        );
+
+        if (konfirmasi) {
+          // Ubah state tombol saat proses (opsional, jika ingin lebih interaktif)
+          const btnHapus = document.querySelector("button.btn-outline-danger");
+          const originalText = btnHapus.innerHTML;
+          btnHapus.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Menghapus...';
+          btnHapus.disabled = true;
+
+          try {
+            // Tembak endpoint DELETE ke backend
+            await fetchAPI(`/api/klien/${klienId}`, "DELETE");
+            alert("Klien berhasil dinonaktifkan/dihapus!");
+            window.location.href = "daftar_client_admin.html"; // Redirect kembali ke daftar klien
+          } catch (error) {
+            alert("Gagal menghapus klien: " + error.message);
+            btnHapus.innerHTML = originalText;
+            btnHapus.disabled = false;
+          }
+        }
+      }
     </script>
   </body>
 </html>
