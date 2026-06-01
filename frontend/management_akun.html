@@ -321,7 +321,7 @@
                         <td>${user.username}@klientrack.id</td>
                         <td>${badgeStatus}</td>
                         <td class="text-muted small">${user.createdAt ? new Date(user.createdAt).toLocaleDateString("id-ID") : "-"}</td>
-                        <td><button class="btn btn-sm btn-light border" onclick="alert('Fitur manajemen akun staf di database Aiven aman.')"><i class="bi bi-pencil-square"></i></button></td>
+                        <td><a href="edit_detail_akun_manager.html?id=${user.userId}" class="btn btn-sm btn-light border"><i class="bi bi-pencil-square"></i></a></td>
                     </tr>
                 `;
           });
