@@ -32,6 +32,13 @@ public class PaketController {
         return ResponseEntity.ok(paketRepository.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDetailPaket(@PathVariable Integer id) {
+        return paketRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> editPaket(@PathVariable Integer id, @Valid @RequestBody PaketRequestDTO dto) {
         return paketRepository.findById(id)

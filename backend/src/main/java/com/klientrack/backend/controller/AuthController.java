@@ -121,6 +121,23 @@ public class AuthController {
                 "' telah di-reset oleh Manager " + requesterOpt.get().getNama());
     }
 
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
+
+        return userRepository.findById(id).map(user -> {
+            if (request.containsKey("nama") && !request.get("nama").isEmpty()) {
+                user.setNama(request.get("nama"));
+            }
+            if (request.containsKey("password") && !request.get("password").isEmpty()) {
+                user.setPassword(passwordEncoder.encode(request.get("password")));
+            }
+            userRepository.save(user);
+            return ResponseEntity.ok("Akun berhasil diperbarui");
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/users")
     public ResponseEntity<?> getSemuaUser() {
         return ResponseEntity.ok(userRepository.findAll());
