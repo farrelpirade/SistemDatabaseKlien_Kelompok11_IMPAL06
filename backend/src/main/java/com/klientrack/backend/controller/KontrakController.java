@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 
@@ -44,5 +45,10 @@ public class KontrakController {
             kontrakRepository.save(kontrak);
             return ResponseEntity.ok("Status kontrak berhasil diperbarui");
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getSemuaKontrak() {
+        return ResponseEntity.ok(kontrakRepository.findAll());
     }
 }
