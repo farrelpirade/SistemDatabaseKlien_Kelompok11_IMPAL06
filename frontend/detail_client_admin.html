@@ -4,11 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KlienTrack - Detail Client</title>
-    <script>
-      if (localStorage.getItem("theme") === "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
-    </script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -23,28 +18,24 @@
     />
 
     <style>
+      /* --- PALET WARNA LIGHT MODE --- */
       :root {
         --primary-blue: #0052cc;
-        --bg-sidebar: #f0f4f9;
+        --bg-sidebar: #ffffff;
         --bg-main: #f8faff;
+        --bg-card: #ffffff;
+        --text-main: #1e293b;
         --text-muted: #64748b;
-        --text-dark: #1e293b;
-      }
-
-      [data-theme="dark"] {
-        --bg-sidebar: #1a1c1e;
-        --bg-main: #0f1113;
-        --card-bg: #1e2022;
-        --text-dark: #f8faff;
-        --text-muted: #94a3b8;
-        --border-color: #333639;
+        --border-color: #e2e8f0;
+        --input-bg: #f1f5f9;
+        --input-border: transparent;
       }
 
       body {
         font-family: "Inter", sans-serif;
         background-color: var(--bg-main);
         margin: 0;
-        color: var(--text-dark);
+        color: var(--text-main);
       }
 
       /* --- SIDEBAR --- */
@@ -237,12 +228,6 @@
           <span class="small fw-bold">Detail</span>
         </div>
         <div class="d-flex align-items-center gap-3">
-          <button
-            class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center"
-            style="width: 35px; height: 35px"
-          >
-            <i class="bi bi-bell"></i>
-          </button>
           <div class="profile-circle-sm" id="header_initial_top">--</div>
         </div>
       </div>
