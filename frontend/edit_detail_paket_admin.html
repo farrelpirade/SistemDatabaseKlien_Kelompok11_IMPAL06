@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlienTrack - Tambah Paket Baru</title>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0052cc;
+            --bg-sidebar: #f0f4f9;
+            --bg-main: #f8faff;
+            --text-muted: #64748b;
+            --text-dark: #1e293b;
+        }
+
+        [data-theme="dark"] {
+            --bg-sidebar: #1a1c1e;
+            --bg-main: #0f1113;
+            --card-bg: #1e2022;
+            --text-dark: #f8faff;
+            --text-muted: #94a3b8;
+            --border-color: #333639;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-main); 
+            margin: 0; 
+            color: var(--text-dark);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; height: 100vh; background: var(--bg-sidebar); position: fixed; padding: 24px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .nav-link { color: var(--text-muted); font-weight: 500; padding: 12px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; margin-bottom: 4px; }
+        .nav-link.active { background: #e6f0ff; color: var(--primary-blue); }
+        
+        .profile-widget { margin-top: auto; background: white; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid #e2e8f0; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { margin-left: 260px; padding: 40px; }
+        
+        .profile-circle-sm {
+            width: 35px; height: 35px; background: var(--primary-blue); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 12px;
+        }
+
+        /* --- FORM CARD --- */
+        .content-card {
+            background: white; border-radius: 20px; padding: 40px;
+            border: 1px solid #eef2f7;
+        }
+
+        .form-label-custom {
+            font-size: 12px; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .input-custom {
+            background: #f1f5f9; border: 1px solid transparent;
+            border-radius: 12px; padding: 14px 18px; font-size: 14px; color: var(--text-dark);
+        }
+
+        .input-custom:focus {
+            background: white; border-color: var(--primary-blue); box-shadow: none;
+        }
+
+        .input-group-text-custom {
+            background: #f1f5f9; border: none; border-radius: 12px 0 0 12px;
+            font-weight: 600; color: var(--text-muted); padding-left: 18px;
+        }
+
+        .input-right-radius { border-radius: 0 12px 12px 0 !important; }
+
+        /* --- TOGGLE SWITCH --- */
+        .form-switch .form-check-input {
+            width: 45px; height: 24px; cursor: pointer;
+        }
+
+        .status-label { font-size: 10px; font-weight: 800; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-2 ps-2">
+            <div class="bg-primary p-2 rounded-3 me-2">
+                <i class="bi bi-wifi text-white fs-5"></i>
+            </div>
+            <h5 class="fw-bold mb-0">KlienTrack</h5>
+        </div>
+
+        <div class="nav-section-title">Menu Utama</div>
+        <a href="dashboard_admin.html" class="nav-link">
+            <i class="bi bi-grid-fill me-3"></i> Dashboard
+        </a>
+        <a href="daftar_client_admin.html" class="nav-link">
+            <i class="bi bi-people me-3"></i> Daftar Klien
+        </a>
+        <a href="kontrak_admin.html" class="nav-link">
+            <i class="bi bi-file-earmark-text me-3"></i> Kontrak
+        </a>
+        <a href="paket_layanan_admin.html" class="nav-link active">
+            <i class="bi bi-box-seam me-3"></i> Paket Layanan
+        </a>
+
+        <div class="nav-section-title">Sistem</div>
+        <a href="pengaturan_akun_admin.html" class="nav-link">
+            <i class="bi bi-gear me-3"></i> Pengaturan
+        </a>
+
+        <div class="profile-widget">
+            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px; font-size: 12px;">
+                --
+            </div>
+            <div>
+                <div class="fw-bold small">Memuat...</div>
+                <div class="text-muted" style="font-size: 11px;">Administrator</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Manajemen Paket Layanan</span>
+                <i class="bi bi-chevron-right text-muted" style="font-size: 10px;"></i>
+                <span class="small fw-bold">Edit Paket</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                    <i class="bi bi-bell"></i>
+                </button>
+                <div class="profile-circle-sm" id="header_initial_top">--</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1">Edit Detail Paket</h2>
+        </div>
+
+        <div class="content-card">
+            <form id="formTambahPaket">
+                <div class="mb-4">
+                    <label class="form-label-custom">Package Name</label>
+                    <input type="text" class="form-control input-custom" id="input_nama_paket" placeholder="e.g. Home Fiber Extreme">
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Category</label>
+                        <select class="form-select input-custom" id="input_kategori_paket">
+                            <option value="" selected disabled>Select Category</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Business">Business</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Speed (Mbps)</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control input-custom" id="input_kecepatan_paket" placeholder="100">
+                            <span class="input-group-text bg-light border-0 fw-bold px-3" style="border-radius: 0 12px 12px 0; font-size: 12px;">MBPS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Price Per Month</label>
+                        <div class="input-group">
+                            <span class="input-group-text input-group-text-custom">Rp.</span>
+                            <input type="number" class="form-control input-custom input-right-radius" id="input_harga_paket" placeholder="350.000">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Initial Status</label>
+                        <div class="d-flex align-items-center gap-3 mt-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="input_status_paket" checked>
+                            </div>
+                            <span class="status-label">ACTIVATE IMMEDIATELY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-5">
+                    <button type="submit" class="btn btn-primary px-5 py-3 fw-bold" style="border-radius: 12px; font-size: 14px;">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-light px-5 py-3 fw-bold border" style="border-radius: 12px; font-size: 14px; background: white;">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
