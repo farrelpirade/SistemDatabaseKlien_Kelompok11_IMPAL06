@@ -1,191 +1,312 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KlienTrack - Daftar Client</title>
     <script>
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        :root {
-            --primary-blue: #0052cc;
-            --bg-sidebar: #f0f4f9;
-            --bg-main: #f8faff;
-            --text-muted: #64748b;
-            --text-dark: #1e293b;
-        }
+      :root {
+        --primary-blue: #0052cc;
+        --bg-sidebar: #f0f4f9;
+        --bg-main: #f8faff;
+        --text-muted: #64748b;
+        --text-dark: #1e293b;
+      }
 
-        [data-theme="dark"] {
-            --bg-sidebar: #1a1c1e;
-            --bg-main: #0f1113;
-            --card-bg: #1e2022;
-            --text-dark: #f8faff;
-            --text-muted: #94a3b8;
-            --border-color: #333639;
-        }
+      [data-theme="dark"] {
+        --bg-sidebar: #1a1c1e;
+        --bg-main: #0f1113;
+        --card-bg: #1e2022;
+        --text-dark: #f8faff;
+        --text-muted: #94a3b8;
+        --border-color: #333639;
+      }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-main); 
-            margin: 0; 
-            color: var(--text-dark);
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-main);
+        margin: 0;
+        color: var(--text-dark);
+      }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 260px; height: 100vh; background: var(--bg-sidebar); position: fixed; padding: 24px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .main-content { margin-left: 260px; padding: 40px; }
-        
-        .nav-link { color: var(--text-muted); font-weight: 500; padding: 12px 16px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; margin-bottom: 4px; }
-        .nav-link.active { background: #e6f0ff; color: var(--primary-blue); }
-        
+      /* --- SIDEBAR --- */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background: var(--bg-sidebar);
+        position: fixed;
+        padding: 24px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+      }
+      .main-content {
+        margin-left: 260px;
+        padding: 40px;
+      }
 
-        .profile-widget {
-            margin-top: auto;
-            background: white;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #e2e8f0;
-        }
+      .nav-link {
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .nav-link.active {
+        background: #e6f0ff;
+        color: var(--primary-blue);
+      }
 
-        /* --- TOPBAR --- */
-        .profile-circle-sm {
-            width: 35px; height: 35px; background: var(--primary-blue); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 12px;
-        }
+      .profile-widget {
+        margin-top: auto;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #e2e8f0;
+      }
 
-        /* --- CLIENT CARD STYLING --- */
-        .client-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #eef2f7;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.2s;
-        }
+      /* --- TOPBAR --- */
+      .profile-circle-sm {
+        width: 35px;
+        height: 35px;
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 12px;
+      }
 
-        .client-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+      /* --- CLIENT CARD STYLING --- */
+      .client-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #eef2f7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.2s;
+      }
 
-        .client-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #f1f5f9;
-        }
+      .client-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+      .client-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #f1f5f9;
+      }
 
-        .dot-active { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
 
-        .btn-detail {
-            background-color: var(--primary-blue);
-            color: white;
-            border-radius: 8px;
-            padding: 6px 30px;
-            font-weight: 600;
-            font-size: 14px;
-            border: none;
-        }
+      .dot-active {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+      }
+
+      .btn-detail {
+        background-color: var(--primary-blue);
+        color: white;
+        border-radius: 8px;
+        padding: 6px 30px;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="sidebar">
-        <div class="d-flex align-items-center mb-2 ps-2">
-            <div class="bg-primary p-2 rounded-3 me-2">
-                <i class="bi bi-wifi text-white fs-5"></i>
-            </div>
-            <h5 class="fw-bold mb-0">KlienTrack</h5>
+      <div class="d-flex align-items-center mb-2 ps-2">
+        <div class="bg-primary p-2 rounded-3 me-2">
+          <i class="bi bi-wifi text-white fs-5"></i>
         </div>
+        <h5 class="fw-bold mb-0">KlienTrack</h5>
+      </div>
 
-       <div class="nav-section-title">Menu Utama</div>
-        <a href="dashboard_admin.html" class="nav-link">
-            <i class="bi bi-grid-fill me-3"></i> Dashboard
-        </a>
-        <a href="daftar_client_admin.html" class="nav-link active">
-            <i class="bi bi-people me-3"></i> Daftar Klien
-        </a>
-        <a href="kontrak_admin.html" class="nav-link">
-            <i class="bi bi-file-earmark-text me-3"></i> Kontrak
-        </a>
-        <a href="paket_layanan_admin.html" class="nav-link">
-            <i class="bi bi-box-seam me-3"></i> Paket Layanan
-        </a>
+      <div class="nav-section-title">Menu Utama</div>
+      <a href="dashboard_admin.html" class="nav-link">
+        <i class="bi bi-grid-fill me-3"></i> Dashboard
+      </a>
+      <a href="daftar_client_admin.html" class="nav-link active">
+        <i class="bi bi-people me-3"></i> Daftar Klien
+      </a>
+      <a href="kontrak_admin.html" class="nav-link">
+        <i class="bi bi-file-earmark-text me-3"></i> Kontrak
+      </a>
+      <a href="paket_layanan_admin.html" class="nav-link">
+        <i class="bi bi-box-seam me-3"></i> Paket Layanan
+      </a>
 
-        <div class="nav-section-title">Sistem</div>
-        <a href="pengaturan_akun_admin.html" class="nav-link">
-            <i class="bi bi-gear me-3"></i> Pengaturan
-        </a>
+      <div class="nav-section-title">Sistem</div>
+      <a href="pengaturan_akun_admin.html" class="nav-link">
+        <i class="bi bi-gear me-3"></i> Pengaturan
+      </a>
 
-        <div class="profile-widget">
-            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px; font-size: 12px;">
-                --
-            </div>
-            <div>
-                <div class="fw-bold small">Memuat...</div>
-                <div class="text-muted" style="font-size: 11px;">Administrator</div>
-            </div>
+      <div class="profile-widget">
+        <div
+          class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+          style="width: 40px; height: 40px; font-size: 12px"
+        >
+          --
         </div>
+        <div>
+          <div class="fw-bold small">Memuat...</div>
+          <div class="text-muted" style="font-size: 11px">Administrator</div>
+        </div>
+      </div>
     </div>
 
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h4 class="fw-bold mb-0">Daftar Client</h4>
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;"><i class="bi bi-bell"></i></button>
-                <div id="header_initial" class="profile-circle-sm">--</div>
-            </div>
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <h4 class="fw-bold mb-0">Daftar Client</h4>
+        <div class="d-flex align-items-center gap-3">
+          <button
+            class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center"
+            style="width: 35px; height: 35px"
+          >
+            <i class="bi bi-bell"></i>
+          </button>
+          <div id="header_initial" class="profile-circle-sm">--</div>
         </div>
+      </div>
 
-        <div class="row g-4" id="client_container">
-            <div class="col-md-6">
-                <div class="client-card">
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="" alt="" class="client-avatar" id="client_img_1">
-                        <div>
-                            <div class="fw-bold" id="client_name_1">-- Nama Klien --</div>
-                            <div class="status-badge mb-1">
-                                <span class="text-muted small">Aktif</span>
-                                <div class="dot-active"></div>
-                                <span class="fw-bold small" id="client_packet_1">-- Paket --</span>
-                            </div>
-                            <div class="text-muted" style="font-size: 12px;">
-                                Terakhir : <span id="client_last_seen_1">-- Hari Lalu --</span>
-                            </div>
-                            <div class="text-muted" style="font-size: 12px;" id="client_contact_1">Whatsapp</div>
-                        </div>
-                    </div>
-                    <a href="detail_client_admin.html" class="btn btn-detail text-decoration-none">
-                        Detail
-                    </a>
+      <div class="row g-4" id="client_container">
+        <div class="col-md-6">
+          <div class="client-card">
+            <div class="d-flex align-items-center gap-3">
+              <img src="" alt="" class="client-avatar" id="client_img_1" />
+              <div>
+                <div class="fw-bold" id="client_name_1">-- Nama Klien --</div>
+                <div class="status-badge mb-1">
+                  <span class="text-muted small">Aktif</span>
+                  <div class="dot-active"></div>
+                  <span class="fw-bold small" id="client_packet_1"
+                    >-- Paket --</span
+                  >
                 </div>
+                <div class="text-muted" style="font-size: 12px">
+                  Terakhir :
+                  <span id="client_last_seen_1">-- Hari Lalu --</span>
+                </div>
+                <div
+                  class="text-muted"
+                  style="font-size: 12px"
+                  id="client_contact_1"
+                >
+                  Whatsapp
+                </div>
+              </div>
             </div>
-
-            </div>
+            <a
+              href="detail_client_admin.html"
+              class="btn btn-detail text-decoration-none"
+            >
+              Detail
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="js/api.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Render inisial nama admin di topbar & sidebar
+        const userName = localStorage.getItem("user_name") || "Admin";
+        const initials = userName.substring(0, 2).toUpperCase();
+        document.getElementById("header_initial").innerText = initials;
+        document.querySelector(".profile-widget .bg-primary").innerText =
+          initials;
+        document.querySelector(".profile-widget .fw-bold.small").innerText =
+          userName;
+
+        const container = document.getElementById("client_container");
+        container.innerHTML =
+          '<div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div><br><small class="text-muted">Memuat data klien...</small></div>';
+
+        try {
+          // Ambil data klien dari backend
+          const klienData = await fetchAPI("/api/klien", "GET");
+          container.innerHTML = ""; // Bersihkan container loading
+
+          if (klienData.length === 0) {
+            container.innerHTML =
+              '<div class="col-12 text-center text-muted py-5">Belum ada klien terdaftar.</div>';
+            return;
+          }
+
+          // Loop untuk merender card klien secara dinamis
+          klienData.forEach((klien) => {
+            const initialKlien = klien.namaKlien.substring(0, 1).toUpperCase();
+            container.innerHTML += `
+                    <div class="col-md-6">
+                        <div class="client-card">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center fw-bold" style="width: 60px; height: 60px; font-size: 20px;">
+                                    ${initialKlien}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">${klien.namaKlien}</div>
+                                    <div class="status-badge mb-1">
+                                        <span class="text-muted small">Alamat: </span>
+                                        <span class="fw-bold small text-primary">${klien.alamat}</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 12px;">Email: ${klien.email || "-"}</div>
+                                    <div class="text-muted" style="font-size: 12px;">No Telp: ${klien.noTelepon}</div>
+                                </div>
+                            </div>
+                            <a href="detail_client_admin.html?id=${klien.klienId}" class="btn btn-detail text-decoration-none d-flex align-items-center justify-content-center">
+                                Detail
+                            </a>
+                        </div>
+                    </div>
+                `;
+          });
+        } catch (error) {
+          container.innerHTML = `<div class="col-12 text-center text-danger py-5">Gagal memuat data: ${error.message}</div>`;
+        }
+      });
+    </script>
+  </body>
 </html>
