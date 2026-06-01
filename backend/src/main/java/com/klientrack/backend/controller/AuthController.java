@@ -120,4 +120,9 @@ public class AuthController {
         return ResponseEntity.ok("Berhasil: Password untuk '" + targetUsername +
                 "' telah di-reset oleh Manager " + requesterOpt.get().getNama());
     }
+    
+    @GetMapping("/users")
+    public ResponseEntity<?> getSemuaUser() {
+        return ResponseEntity.ok(userRepository.findAll());
+    }
 }
