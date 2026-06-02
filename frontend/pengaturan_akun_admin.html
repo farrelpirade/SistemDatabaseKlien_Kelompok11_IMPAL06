@@ -181,6 +181,10 @@
         border-radius: 16px;
         padding: 24px;
         text-align: center;
+        height: 100%; /* Membuat tinggi kartu sama dengan kartu di sebelahnya */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       .btn-logout {
         width: 100%;
@@ -195,6 +199,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        transition: 0.2s;
       }
       .btn-logout:hover {
         background: #ef4444;

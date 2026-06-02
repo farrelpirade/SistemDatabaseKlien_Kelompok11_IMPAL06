@@ -409,6 +409,17 @@
             window.location.href = "pengaturan_akun_manager.html";
           });
       });
+
+      // --- 4. FUNGSI LOGOUT DENGAN KONFIRMASI ---
+      function logoutAction() {
+        const konfirmasi = confirm(
+          "Apakah Anda yakin ingin keluar dari KlienTrack?",
+        );
+        if (konfirmasi) {
+          // Memanggil fungsi logout dari api.js
+          logout();
+        }
+      }
     </script>
   </body>
 </html>
