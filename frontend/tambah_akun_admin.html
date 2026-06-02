@@ -18,7 +18,6 @@
     />
 
     <style>
-      /* --- PALET WARNA LIGHT MODE --- */
       :root {
         --primary-blue: #0052cc;
         --bg-sidebar: #ffffff;
@@ -67,7 +66,7 @@
         color: var(--primary-blue);
       }
 
-      /* header profile */
+      /* Header Profile */
       .profile-circle {
         width: 35px;
         height: 35px;
@@ -124,34 +123,6 @@
         font-size: 14px;
       }
 
-      /* Toggle Access Styling */
-      .access-item {
-        background: #f8faff;
-        border-radius: 12px;
-        padding: 16px 20px;
-        margin-bottom: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .access-info h6 {
-        margin-bottom: 2px;
-        font-weight: 600;
-        font-size: 14px;
-      }
-      .access-info p {
-        margin-bottom: 0;
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-
-      .form-check-input {
-        width: 40px;
-        height: 20px;
-        cursor: pointer;
-      }
-
       .profile-widget {
         margin-top: auto;
         background: white;
@@ -173,17 +144,23 @@
         <h5 class="fw-bold mb-0">KlienTrack</h5>
       </div>
 
-      <div class="nav-section-title">Menu Utama</div>
+      <div class="nav-section-title text-muted small fw-bold mb-2 ps-2">
+        MENU UTAMA
+      </div>
       <a href="dashboard_manager.html" class="nav-link">
         <i class="bi bi-grid-fill me-3"></i> Dashboard
       </a>
 
-      <div class="nav-section-title">Laporan</div>
+      <div class="nav-section-title text-muted small fw-bold mt-4 mb-2 ps-2">
+        LAPORAN
+      </div>
       <a href="management_akun.html" class="nav-link active">
         <i class="bi bi-bar-chart-line me-3"></i> Management Akun
       </a>
 
-      <div class="nav-section-title">Sistem</div>
+      <div class="nav-section-title text-muted small fw-bold mt-4 mb-2 ps-2">
+        SISTEM
+      </div>
       <a href="pengaturan_akun_manager.html" class="nav-link">
         <i class="bi bi-gear me-3"></i> Pengaturan
       </a>
@@ -212,7 +189,7 @@
           <span class="text-muted fw-normal">Tambah Akun Admin</span>
         </h5>
         <div class="d-flex align-items-center gap-3">
-          <div class="profile-circle">--</div>
+          <div class="profile-circle" id="topbar-initial">--</div>
         </div>
       </div>
 
@@ -220,19 +197,39 @@
         <form id="formTambahAdmin">
           <div class="section-header">
             <div class="section-icon"><i class="bi bi-person"></i></div>
-            <h6 class="fw-bold mb-0">Informasi Profil</h6>
+            <h6 class="fw-bold mb-0">Informasi Profil Akun Baru</h6>
           </div>
 
           <div class="row g-4 mb-4">
             <div class="col-md-6">
-              <label class="form-label">Full Name</label>
+              <label class="form-label">Nama Lengkap</label>
               <input
                 type="text"
                 class="form-control input-custom"
                 id="admin_fullname"
                 placeholder="e.g. Budi Santoso"
+                required
               />
             </div>
+            <div class="col-md-6">
+              <label class="form-label">Username</label>
+              <div class="input-group">
+                <span
+                  class="input-group-text bg-light border-end-0"
+                  style="border-radius: 10px 0 0 10px; border-color: #e2e8f0"
+                >
+                  <i class="bi bi-at text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control input-custom border-start-0 ps-0"
+                  id="admin_username"
+                  placeholder="admin.budi"
+                  required
+                />
+              </div>
+            </div>
+
             <div class="col-md-6">
               <label class="form-label">Email Address</label>
               <input
@@ -240,9 +237,10 @@
                 class="form-control input-custom"
                 id="admin_email"
                 placeholder="budi@klientrack.com"
+                required
               />
             </div>
-            <div class="col-12">
+            <div class="col-md-6">
               <label class="form-label">Password</label>
               <div class="input-group">
                 <input
@@ -250,6 +248,7 @@
                   class="form-control input-custom border-end-0"
                   id="admin_password"
                   placeholder="••••••••••••"
+                  required
                 />
                 <span
                   class="input-group-text bg-light border-start-0"
@@ -265,63 +264,13 @@
                 </span>
               </div>
               <small class="text-muted mt-2 d-block" style="font-size: 10px"
-                >Gunakan minimal 12 karakter dengan kombinasi simbol dan
+                >Gunakan minimal 8 karakter dengan kombinasi simbol dan
                 angka.</small
               >
             </div>
           </div>
 
-          <div class="section-header mt-5">
-            <div class="section-icon"><i class="bi bi-shield-check"></i></div>
-            <h6 class="fw-bold mb-0">Izin & Hak Akses</h6>
-          </div>
-
-          <div class="access-item">
-            <div class="access-info">
-              <h6>Billing Management</h6>
-              <p>Kelola invoice, pembayaran, dan laporan keuangan.</p>
-            </div>
-            <div class="form-check form-switch">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="access_billing"
-              />
-            </div>
-          </div>
-
-          <div class="access-item">
-            <div class="access-info">
-              <h6>Infrastructure Access</h6>
-              <p>
-                Akses penuh ke konfigurasi OLT, Mikrotik, dan monitoring link.
-              </p>
-            </div>
-            <div class="form-check form-switch">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="access_infra"
-                checked
-              />
-            </div>
-          </div>
-
-          <div class="access-item">
-            <div class="access-info">
-              <h6>Customer Support</h6>
-              <p>Kelola tiket bantuan dan verifikasi data pelanggan.</p>
-            </div>
-            <div class="form-check form-switch">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="access_support"
-              />
-            </div>
-          </div>
-
-          <div class="d-flex justify-content-end gap-3 mt-5">
+          <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
             <button
               type="button"
               class="btn btn-link text-dark text-decoration-none fw-bold"
@@ -334,17 +283,26 @@
               class="btn btn-primary px-5 py-2 fw-bold"
               style="border-radius: 10px"
             >
-              KONFIRMASI
+              Simpan Admin Baru
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- 1. Pastikan script api.js dipanggil sebelum script logika Anda -->
     <script src="js/api.js"></script>
     <script>
-      // Logika Toggle Password (Tetap dipertahankan)
+      // 1. Render Profil User yang sedang login
+      document.addEventListener("DOMContentLoaded", function () {
+        const userName = localStorage.getItem("user_name") || "Manager";
+        const initial = userName.substring(0, 2).toUpperCase();
+
+        document.getElementById("user-fullname").innerText = userName;
+        document.getElementById("user-initial").innerText = initial;
+        document.getElementById("topbar-initial").innerText = initial;
+      });
+
+      // 2. Logika Toggle Password
       const togglePassword = document.querySelector("#togglePassword");
       const passwordInput = document.querySelector("#admin_password");
       const eyeIcon = document.querySelector("#eyeIcon");
@@ -359,35 +317,30 @@
         eyeIcon.classList.toggle("bi-eye-slash");
       });
 
-      // 2. Logika Submit Form ke API
+      // 3. Logika Submit Form ke API
       document
         .getElementById("formTambahAdmin")
         .addEventListener("submit", async function (e) {
-          e.preventDefault(); // Mencegah halaman refresh
+          e.preventDefault();
 
-          // Ambil ID Manager yang sedang login dari localStorage
           const requesterId = localStorage.getItem("user_id");
-
-          // Ubah tombol jadi loading agar user tidak klik 2x
           const btnSubmit = this.querySelector('button[type="submit"]');
           const originalText = btnSubmit.innerHTML;
+
           btnSubmit.innerHTML = "MEMPROSES...";
           btnSubmit.disabled = true;
 
-          // Susun data sesuai UserRegisterDTO di Spring Boot
+          // Payload disesuaikan: mengambil dari field admin_username secara eksplisit
           const payload = {
-            // Karena form hanya minta email, kita jadikan email sbg username,
-            // atau bisa di-split mengambil nama depannya saja: split('@')[0]
-            username: document
-              .getElementById("admin_email")
-              .value.split("@")[0],
+            username: document.getElementById("admin_username").value,
             password: document.getElementById("admin_password").value,
             nama: document.getElementById("admin_fullname").value,
-            roleId: 2, // WAJIB 2 UNTUK ADMIN (Jika di file tambah_akun_manager.html, ubah jadi 1)
+            // Jika backend DTO Anda mendukung email, Anda bisa menambahkan:
+            // email: document.getElementById("admin_email").value,
+            roleId: 2, // 2 = Admin
           };
 
           try {
-            // Tembak API Register dengan tambahan header X-Requester-Id
             const response = await fetchAPI(
               "/api/auth/register",
               "POST",
@@ -397,11 +350,10 @@
               },
             );
 
-            alert(response); // Tampilkan pesan sukses dari Spring Boot
-            window.location.href = "management_akun.html"; // Redirect kembali ke daftar akun
+            alert(response);
+            window.location.href = "management_akun.html";
           } catch (error) {
             alert("Gagal membuat akun: " + error.message);
-            // Kembalikan tombol jika error
             btnSubmit.innerHTML = originalText;
             btnSubmit.disabled = false;
           }
