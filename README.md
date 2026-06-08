@@ -40,13 +40,13 @@ _Pemodelan struktur tabel basis data dan relasi antar entitas._
 
 Berikut daftar seluruh Sequence Diagram yang menggambarkan alur interaksi antar komponen sistem:
 
-#### P1 — Autentikasi
+#### P1 — Registrasi Akun Baru (Autentikasi)
 
 | Kode | Nama | File |
 |------|------|------|
 | P1.1 | Registrasi Akun Baru | ![P1.1](docs/diagrams/SequenceDiagram/SD_Registrasi%20Akun%20Baru.png) |
 
-#### P2 — Manajemen Sesi
+#### P2 — Login (Manajemen sesi)
 
 | Kode | Nama | File |
 |------|------|------|
@@ -54,7 +54,7 @@ Berikut daftar seluruh Sequence Diagram yang menggambarkan alur interaksi antar 
 | P2.2 | Logout | ![P2.2](docs/diagrams/SequenceDiagram/SD_Logout.png) |
 | P2.3 | Reset Password | ![P2.3](docs/diagrams/SequenceDiagram/SD_Reset%20Password.png) |
 
-#### P3 — Manajemen Klien
+#### P3 — Olah data klien (Manajemen Klien)
 
 | Kode | Nama | File |
 |------|------|------|
@@ -63,7 +63,7 @@ Berikut daftar seluruh Sequence Diagram yang menggambarkan alur interaksi antar 
 | P3.3 | Update Data Klien | ![P3.3](docs/diagrams/SequenceDiagram/SD_Update%20Data%20Klien.png) |
 | P3.4 | Hapus Data Klien | ![P3.4](docs/diagrams/SequenceDiagram/SD_Hapus%20Data%20Klien.png) |
 
-#### P4 — Manajemen Paket Layanan
+#### P4 — Olah data paket layanan (Manajemen Paket Layanan)
 
 | Kode | Nama | File |
 |------|------|------|
@@ -72,32 +72,32 @@ Berikut daftar seluruh Sequence Diagram yang menggambarkan alur interaksi antar 
 | P4.3 | Edit Data Paket | ![P4.3](docs/diagrams/SequenceDiagram/SD_Edit%20Data%20Paket.png) |
 | P4.4 | Hapus Data Paket | ![P4.4](docs/diagrams/SequenceDiagram/SD_Hapus%20Data%20Paket.png) |
 
-#### P5 — Manajemen Kontrak
+#### P5 — Memantau masa kontrak (Manajemen Kontrak)
 
 | Kode | Nama | File |
 |------|------|------|
 | P5.1 | Buat Kontrak Baru | ![P5.1](docs/diagrams/SequenceDiagram/SD_Buat%20Kontrak%20Baru.png) |
 
-#### P6 — Update Kontrak
+#### P6 — Update Status Kontrak (Update Kontrak)
 
 | Kode | Nama | File |
 |------|------|------|
 | P6.1 | Update Status Kontrak | ![P6.1](docs/diagrams/SequenceDiagram/SD_Update%20Status%20Kontrak.png) |
 
-#### P7 — Riwayat Komunikasi
+#### P7 — Pencatatan Interaksi (Riwayat Komunikasi)
 
 | Kode | Nama | File |
 |------|------|------|
 | P7.1 | Tambah Riwayat Komunikasi | ![P7.1](docs/diagrams/SequenceDiagram/SD_Tambah%20Riwayat%20Komunikasi.png) |
 | P7.2 | List Riwayat per Klien | ![P7.2](docs/diagrams/SequenceDiagram/SD_List%20Riwayat%20per%20Klien.png) |
 
-#### P8 — Laporan
+#### P8 —  Pembuatan Laporan (Laporan)
 
 | Kode | Nama | File |
 |------|------|------|
 | P8.1 | Generate Laporan | ![P8.1](docs/diagrams/SequenceDiagram/SD_Generate%20Laporan.png) |
 
-#### P9 — Statistik & Dashboard
+#### P9 — Visualisasi dashboard manager (Statistik & Dashboard)
 
 | Kode | Nama | File |
 |------|------|------|
