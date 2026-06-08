@@ -403,6 +403,7 @@
       });
 
       // TAHAP 2: FUNGSI KALKULASI DINAMIS (HARGA, MODEM, DURASI, PPN)
+      // TAHAP 2: FUNGSI KALKULASI DINAMIS (HARGA, MODEM, DURASI, PPN)
       function calculateTotal() {
         const inputPaket = document.getElementById("input_paket");
         const inputModem = document.getElementById("input_modem");
@@ -448,11 +449,15 @@
           hargaPaket === 0 ? 0 : totalBiayaPaket + totalBiayaModem;
         const ppn = totalHarga * 0.11;
 
+        // --- PERBAIKAN: Tambahkan Harga Dasar dengan PPN ---
+        const totalDenganPPN = totalHarga + ppn;
+
         // Update data ke UI Form & Ringkasan
         if (totalHarga > 0) {
-          inputHarga.value = totalHarga;
+          // Set input dan summary dengan nilai yang sudah ditambah PPN
+          inputHarga.value = totalDenganPPN;
           document.getElementById("summary_total_biaya").innerText =
-            `Rp ${totalHarga.toLocaleString("id-ID")}`;
+            `Rp ${totalDenganPPN.toLocaleString("id-ID")}`;
           document.getElementById("summary_ppn").innerText =
             `Rp ${ppn.toLocaleString("id-ID")}`;
         } else {
