@@ -361,56 +361,126 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Wajib panggil API -->
     <script src="js/api.js"></script>
     <script>
       const modalKonfirmasi = new bootstrap.Modal(
         document.getElementById("confirmModal"),
       );
 
-      // TAHAP 1: OTOMATIS AMBIL DATA KLIEN & PAKET SAAT HALAMAN DIBUKA
+      // TAHAP 1: INISIALISASI PROFIL & AMBIL DATA SAAT HALAMAN DIBUKA
       document.addEventListener("DOMContentLoaded", async function () {
+        // --- Render Profil User ---
+        const userName = localStorage.getItem("user_name") || "Admin";
+        document.getElementById("header_initial").innerText = userName
+          .substring(0, 2)
+          .toUpperCase();
+        document.querySelector(".profile-widget .bg-primary").innerText =
+          userName.substring(0, 2).toUpperCase();
+        document.querySelector(".profile-widget .fw-bold.small").innerText =
+          userName;
+
         try {
-          // Ambil data klien dari database
+          // --- Fetch Data Klien ---
           const klienData = await fetchAPI("/api/klien", "GET");
           const selectKlien = document.getElementById("input_klien");
           klienData.forEach((klien) => {
             selectKlien.innerHTML += `<option value="${klien.klienId}">${klien.namaKlien}</option>`;
           });
 
-          // Ambil data paket dari database
+          // --- Fetch Data Paket ---
           const paketData = await fetchAPI("/api/paket", "GET");
           const selectPaket = document.getElementById("input_paket");
           paketData.forEach((paket) => {
-            // Simpan harga di atribut "data-harga" agar mudah dipanggil
             selectPaket.innerHTML += `<option value="${paket.paketId}" data-harga="${paket.harga}">${paket.namaPaket} - Rp ${paket.harga.toLocaleString("id-ID")}</option>`;
           });
 
-          // Isi dropdown Modem (Statis dari database ID)
+          // --- Isi Dropdown Modem ---
           document.getElementById("input_modem").innerHTML +=
-            `<option value="1">Sewa Modem</option><option value="2">Beli Modem</option>`;
+            `<option value="1">Sewa Modem (+ Rp 50.000/bln)</option><option value="2">Beli Modem (Flat Rp 200.000)</option>`;
         } catch (error) {
           console.error("Gagal memuat data awal:", error);
         }
       });
 
-      // TAHAP 2: AUTTO-FILL HARGA KETIKA PAKET DIPILIH
+      // TAHAP 2: FUNGSI KALKULASI DINAMIS (HARGA, MODEM, DURASI, PPN)
+      function calculateTotal() {
+        const inputPaket = document.getElementById("input_paket");
+        const inputModem = document.getElementById("input_modem");
+        const inputTglMulai = document.getElementById("input_tgl_mulai");
+        const inputTglSelesai = document.getElementById("input_tgl_selesai");
+        const inputHarga = document.getElementById("input_harga");
+
+        // Ambil harga paket dasar
+        const selectedPaket = inputPaket.options[inputPaket.selectedIndex];
+        const hargaPaket =
+          selectedPaket && selectedPaket.value
+            ? parseFloat(selectedPaket.getAttribute("data-harga") || 0)
+            : 0;
+
+        // Hitung durasi (Bulan)
+        let durasiBulan = 0;
+        if (inputTglMulai.value && inputTglSelesai.value) {
+          const startDate = new Date(inputTglMulai.value);
+          const endDate = new Date(inputTglSelesai.value);
+
+          durasiBulan = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+          durasiBulan -= startDate.getMonth();
+          durasiBulan += endDate.getMonth();
+
+          if (durasiBulan <= 0) durasiBulan = 1; // Cegah durasi 0 atau minus
+        }
+
+        // Kalkulasi Biaya Modem
+        const modemId = parseInt(inputModem.value);
+        let totalBiayaModem = 0;
+        if (modemId === 1) {
+          totalBiayaModem = 50000 * durasiBulan; // Biaya Sewa
+        } else if (modemId === 2) {
+          totalBiayaModem = 200000; // Biaya Beli Flat
+        }
+
+        // Jika belum ada durasi (user belum pilih tanggal), tapi sudah pilih paket, hitung per 1 bulan
+        const durasiAktif = durasiBulan > 0 ? durasiBulan : 1;
+
+        // Kalkulasi Total Keseluruhan
+        const totalBiayaPaket = hargaPaket * durasiAktif;
+        const totalHarga =
+          hargaPaket === 0 ? 0 : totalBiayaPaket + totalBiayaModem;
+        const ppn = totalHarga * 0.11;
+
+        // Update data ke UI Form & Ringkasan
+        if (totalHarga > 0) {
+          inputHarga.value = totalHarga;
+          document.getElementById("summary_total_biaya").innerText =
+            `Rp ${totalHarga.toLocaleString("id-ID")}`;
+          document.getElementById("summary_ppn").innerText =
+            `Rp ${ppn.toLocaleString("id-ID")}`;
+        } else {
+          inputHarga.value = "";
+          document.getElementById("summary_total_biaya").innerText = `Rp --`;
+          document.getElementById("summary_ppn").innerText = `Rp --`;
+        }
+
+        document.getElementById("summary_durasi").innerText =
+          durasiBulan > 0 ? `${durasiBulan} Bulan` : "-- Bulan";
+      }
+
+      // TAHAP 3: PASANG EVENT LISTENER UNTUK TRIGGER KALKULASI
       document
         .getElementById("input_paket")
-        .addEventListener("change", function () {
-          const selectedOption = this.options[this.selectedIndex];
-          const harga = selectedOption.getAttribute("data-harga");
+        .addEventListener("change", calculateTotal);
+      document
+        .getElementById("input_modem")
+        .addEventListener("change", calculateTotal);
+      document
+        .getElementById("input_tgl_mulai")
+        .addEventListener("change", calculateTotal);
+      document
+        .getElementById("input_tgl_selesai")
+        .addEventListener("change", calculateTotal);
 
-          if (harga) {
-            document.getElementById("input_harga").value = harga; // Isi form input harga
-            document.getElementById("summary_total_biaya").innerText =
-              `Rp ${parseInt(harga).toLocaleString("id-ID")}`; // Isi ringkasan kanan
-          }
-        });
-
-      // TAHAP 3: MUNCULKAN MODAL KONFIRMASI
+      // TAHAP 4: MUNCULKAN MODAL KONFIRMASI
       function triggerConfirm() {
-        // Validasi simpel sebelum modal muncul
         if (
           !document.getElementById("input_klien").value ||
           !document.getElementById("input_paket").value
@@ -421,7 +491,7 @@
         modalKonfirmasi.show();
       }
 
-      // TAHAP 4: KIRIM DATA KONTRAK (POST) SAAT KLIK "YA" DI MODAL
+      // TAHAP 5: KIRIM DATA KONTRAK (POST)
       document
         .getElementById("btnConfirmYes")
         .addEventListener("click", async function () {
@@ -430,14 +500,14 @@
           const payload = {
             klienId: parseInt(document.getElementById("input_klien").value),
             paketId: parseInt(document.getElementById("input_paket").value),
-            createdBy: parseInt(localStorage.getItem("user_id")), // ID Admin yang sedang login
+            createdBy: parseInt(localStorage.getItem("user_id")),
             tanggalMulai: document.getElementById("input_tgl_mulai").value,
             tanggalSelesai: document.getElementById("input_tgl_selesai").value,
             hargaKontrak: parseFloat(
               document.getElementById("input_harga").value,
             ),
             tipeModemId: parseInt(document.getElementById("input_modem").value),
-            statusKontrakId: 1, // Kontrak baru otomatis statusnya 1 (Aktif)
+            statusKontrakId: 1,
           };
 
           try {
