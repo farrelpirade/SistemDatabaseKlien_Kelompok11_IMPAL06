@@ -8,22 +8,107 @@
 
 Bagian ini memuat rancangan aliran data dan arsitektur sistem perangkat lunak.
 
+---
+
 ### 1. Data Flow Diagram (DFD)
 
-**DFD Level 0** ![DFD Level 0](docs/diagrams/DFDLevel0.png)  
+**DFD Level 0**
+
+![DFD Level 0](docs/diagrams/DFDLevel0.png)
+
 _Diagram Konteks yang menunjukkan aliran data global._
 
-**DFD Level 1** ![DFD Level 1](docs/diagrams/DFDLevel1.png)  
+---
+
+**DFD Level 1**
+
+![DFD Level 1](docs/diagrams/DFDLevel1.png)
+
 _Detail proses bisnis dan integrasi database._
+
+---
 
 ### 2. Entity Relationship Diagram (ERD)
 
-![ERD](docs/diagrams/ERD.png)  
+![ERD](docs/diagrams/ERD.png)
+
 _Pemodelan struktur tabel basis data dan relasi antar entitas._
 
-### 3. Class Diagram
+---
 
-![Class Diagram](docs/diagrams/ClassDiagram.png)  
+### 3. Sequence Diagram
+
+Berikut daftar seluruh Sequence Diagram yang menggambarkan alur interaksi antar komponen sistem:
+
+#### P1 — Autentikasi
+
+| Kode | Nama | File |
+|------|------|------|
+| P1.1 | Registrasi Akun Baru | ![P1.1](docs/diagrams/SequenceDiagram/SD_Registrasi%20Akun%20Baru.png) |
+
+#### P2 — Manajemen Sesi
+
+| Kode | Nama | File |
+|------|------|------|
+| P2.1 | Login | ![P2.1](docs/diagrams/SequenceDiagram/SD_Login.png) |
+| P2.2 | Logout | ![P2.2](docs/diagrams/SequenceDiagram/SD_Logout.png) |
+| P2.3 | Reset Password | ![P2.3](docs/diagrams/SequenceDiagram/SD_Reset%20Password.png) |
+
+#### P3 — Manajemen Klien
+
+| Kode | Nama | File |
+|------|------|------|
+| P3.1 | Tambah Data Klien | ![P3.1](docs/diagrams/SequenceDiagram/SD_Tambah%20Data%20Klien.png) |
+| P3.2 | Detail Klien | ![P3.2](docs/diagrams/SequenceDiagram/SD_Detail%20Klien.png) |
+| P3.3 | Update Data Klien | ![P3.3](docs/diagrams/SequenceDiagram/SD_Update%20Data%20Klien.png) |
+| P3.4 | Hapus Data Klien | ![P3.4](docs/diagrams/SequenceDiagram/SD_Hapus%20Data%20Klien.png) |
+
+#### P4 — Manajemen Paket Layanan
+
+| Kode | Nama | File |
+|------|------|------|
+| P4.1 | Tambah Paket | ![P4.1](docs/diagrams/SequenceDiagram/SD_Tambah%20Paket.png) |
+| P4.2 | List Paket Layanan | ![P4.2](docs/diagrams/SequenceDiagram/SD_List%20Paket%20Layanan.png) |
+| P4.3 | Edit Data Paket | ![P4.3](docs/diagrams/SequenceDiagram/SD_Edit%20Data%20Paket.png) |
+| P4.4 | Hapus Data Paket | ![P4.4](docs/diagrams/SequenceDiagram/SD_Hapus%20Data%20Paket.png) |
+
+#### P5 — Manajemen Kontrak
+
+| Kode | Nama | File |
+|------|------|------|
+| P5.1 | Buat Kontrak Baru | ![P5.1](docs/diagrams/SequenceDiagram/SD_Buat%20Kontrak%20Baru.png) |
+
+#### P6 — Update Kontrak
+
+| Kode | Nama | File |
+|------|------|------|
+| P6.1 | Update Status Kontrak | ![P6.1](docs/diagrams/SequenceDiagram/SD_Update%20Status%20Kontrak.png) |
+
+#### P7 — Riwayat Komunikasi
+
+| Kode | Nama | File |
+|------|------|------|
+| P7.1 | Tambah Riwayat Komunikasi | ![P7.1](docs/diagrams/SequenceDiagram/SD_Tambah%20Riwayat%20Komunikasi.png) |
+| P7.2 | List Riwayat per Klien | ![P7.2](docs/diagrams/SequenceDiagram/SD_List%20Riwayat%20per%20Klien.png) |
+
+#### P8 — Laporan
+
+| Kode | Nama | File |
+|------|------|------|
+| P8.1 | Generate Laporan | ![P8.1](docs/diagrams/SequenceDiagram/SD_Generate%20Laporan.png) |
+
+#### P9 — Statistik & Dashboard
+
+| Kode | Nama | File |
+|------|------|------|
+| P9.1 | Statistik Pertumbuhan Pelanggan | ![P9.1](docs/diagrams/SequenceDiagram/SD_Statistik%20Pertumbuhan%20Pelanggan.png) |
+
+---
+
+### 4. Class Diagram
+
+![Class Diagram](docs/diagrams/ClassDiagram.png)
+
 _Struktur kelas, atribut, metode, dan hubungan antar objek dalam sistem._
 
 ---
