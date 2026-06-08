@@ -4,11 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KlienTrack - Detail Client</title>
-    <script>
-      if (localStorage.getItem("theme") === "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
-    </script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -23,28 +18,24 @@
     />
 
     <style>
+      /* --- PALET WARNA LIGHT MODE --- */
       :root {
         --primary-blue: #0052cc;
-        --bg-sidebar: #f0f4f9;
+        --bg-sidebar: #ffffff;
         --bg-main: #f8faff;
+        --bg-card: #ffffff;
+        --text-main: #1e293b;
         --text-muted: #64748b;
-        --text-dark: #1e293b;
-      }
-
-      [data-theme="dark"] {
-        --bg-sidebar: #1a1c1e;
-        --bg-main: #0f1113;
-        --card-bg: #1e2022;
-        --text-dark: #f8faff;
-        --text-muted: #94a3b8;
-        --border-color: #333639;
+        --border-color: #e2e8f0;
+        --input-bg: #f1f5f9;
+        --input-border: transparent;
       }
 
       body {
         font-family: "Inter", sans-serif;
         background-color: var(--bg-main);
         margin: 0;
-        color: var(--text-dark);
+        color: var(--text-main);
       }
 
       /* --- SIDEBAR --- */
@@ -237,12 +228,6 @@
           <span class="small fw-bold">Detail</span>
         </div>
         <div class="d-flex align-items-center gap-3">
-          <button
-            class="btn btn-light rounded-circle border p-0 d-flex align-items-center justify-content-center"
-            style="width: 35px; height: 35px"
-          >
-            <i class="bi bi-bell"></i>
-          </button>
           <div class="profile-circle-sm" id="header_initial_top">--</div>
         </div>
       </div>
@@ -314,7 +299,9 @@
                 -- Detail Modem --
               </p>
               <div class="d-flex justify-content-between align-items-end">
-                <div class="fw-bold text-primary">Rp -- / bulan</div>
+                <div class="fw-bold text-primary" id="client_detail_price">
+                  Rp -- / bulan
+                </div>
                 <div class="text-muted" style="font-size: 11px">
                   Berakhir:
                   <span class="text-warning fw-bold" id="client_detail_expiry"
@@ -344,12 +331,14 @@
 
             <div class="d-grid gap-2 mt-5">
               <button
+                onclick="editKlienAction()"
                 class="btn btn-primary fw-bold py-2"
                 style="border-radius: 10px"
               >
                 <i class="bi bi-pencil-square me-2"></i> Edit Klien
               </button>
               <button
+                onclick="hapusKlienAction()"
                 class="btn btn-outline-danger fw-bold py-2"
                 style="border-radius: 10px"
               >
@@ -455,9 +444,10 @@
         await loadRiwayatKomunikasi();
       });
 
-      // 1. Fungsi memuat data profil klien
+      // 1. Fungsi memuat data profil klien beserta paket aktifnya
       async function loadProfilKlien() {
         try {
+          // A. Fetch Data Dasar Klien
           const klien = await fetchAPI(`/api/klien/${klienId}`, "GET");
           document.getElementById("client_detail_name").innerText =
             klien.namaKlien;
@@ -471,8 +461,42 @@
             klien.tanggalDaftar || "-";
           document.getElementById("client_detail_admin_registrar").innerText =
             "ID Staff: " + klien.createdBy;
+
+          // B. Fetch Data Kontrak & Paket
+          const semuaKontrak = await fetchAPI("/api/kontrak", "GET");
+          // Cari kontrak yang klien ID-nya cocok dan statusnya Aktif (1)
+          const kontrakAktif = semuaKontrak.find(
+            (k) => k.klienId == klienId && k.statusKontrakId === 1,
+          );
+
+          if (kontrakAktif) {
+            // Jika punya kontrak aktif, cari nama paketnya
+            const paket = await fetchAPI(
+              `/api/paket/${kontrakAktif.paketId}`,
+              "GET",
+            );
+
+            document.getElementById("client_detail_packet_name").innerText =
+              paket.namaPaket;
+            document.getElementById("client_detail_modem").innerText =
+              kontrakAktif.tipeModemId === 1 ? "Modem Sewa" : "Modem Beli";
+            document.getElementById("client_detail_expiry").innerText =
+              kontrakAktif.tanggalSelesai;
+
+            // Format angka harga ke Rupiah
+            document.getElementById("client_detail_price").innerText =
+              `Rp ${kontrakAktif.hargaKontrak.toLocaleString("id-ID")} / bulan`;
+          } else {
+            // Jika tidak punya kontrak aktif
+            document.getElementById("client_detail_packet_name").innerText =
+              "Tidak Ada Paket Aktif";
+            document.getElementById("client_detail_modem").innerText = "-";
+            document.getElementById("client_detail_expiry").innerText = "-";
+            document.getElementById("client_detail_price").innerText =
+              "Rp 0 / bulan";
+          }
         } catch (error) {
-          console.error("Gagal memuat data profil klien:", error);
+          console.error("Gagal memuat data profil klien atau kontrak:", error);
         }
       }
 
@@ -497,17 +521,29 @@
 
           riwayat.forEach((log) => {
             let iconClass = "bi-telephone";
-            if (log.mediaKomunikasi.toLowerCase() === "whatsapp")
-              iconClass = "bi-whatsapp";
-            if (log.mediaKomunikasi.toLowerCase() === "kunjungan langsung")
-              iconClass = "bi-geo-alt";
+
+            // PERBAIKAN: Cek dulu apakah log.mediaKomunikasi ada isinya sebelum di-toLowerCase()
+            const media = log.mediaKomunikasi
+              ? log.mediaKomunikasi.toLowerCase()
+              : "";
+
+            if (media === "whatsapp") iconClass = "bi-whatsapp";
+            if (media === "kunjungan langsung") iconClass = "bi-geo-alt";
+
+            // Jika null, berikan nilai default "Tidak diketahui" agar tulisan tetap muncul
+            const displayMedia = log.mediaKomunikasi
+              ? log.mediaKomunikasi
+              : "Tidak diketahui";
+            const displayJenis = log.jenisKomunikasi
+              ? log.jenisKomunikasi
+              : "Catatan";
 
             container.innerHTML += `
                     <div class="timeline-item">
                         <div class="timeline-icon"><i class="bi ${iconClass}"></i></div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="fw-bold small">${log.mediaKomunikasi}</span>
-                            <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">${log.jenisKomunikasi || "Interaksi"}</span>
+                            <span class="fw-bold small">${displayMedia}</span>
+                            <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">${displayJenis}</span>
                             <span class="text-muted" style="font-size: 11px;">${new Date(log.createdAt).toLocaleString("id-ID")}</span>
                         </div>
                         <div class="log-card">
@@ -556,6 +592,42 @@
       document
         .querySelector(".btn-primary.px-4")
         .setAttribute("onclick", "simpanCatatanKomunikasi()");
+
+      // --- FUNGSI EDIT KLIEN ---
+      function editKlienAction() {
+        // Karena aplikasi ini menggunakan skema halaman terpisah untuk edit,
+        // kita arahkan user ke halaman edit klien dengan membawa parameter ID-nya.
+        // Pastikan Anda sudah membuat file edit_client_admin.html
+        window.location.href = `edit_client_admin.html?id=${klienId}`;
+      }
+
+      // --- FUNGSI HAPUS KLIEN ---
+      async function hapusKlienAction() {
+        // Tampilkan konfirmasi agar admin tidak tidak sengaja menekan tombol hapus
+        const konfirmasi = confirm(
+          "Apakah Anda yakin ingin menonaktifkan klien ini? Data kontrak dan riwayat mungkin akan ikut terpengaruh.",
+        );
+
+        if (konfirmasi) {
+          // Ubah state tombol saat proses (opsional, jika ingin lebih interaktif)
+          const btnHapus = document.querySelector("button.btn-outline-danger");
+          const originalText = btnHapus.innerHTML;
+          btnHapus.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Menghapus...';
+          btnHapus.disabled = true;
+
+          try {
+            // Tembak endpoint DELETE ke backend
+            await fetchAPI(`/api/klien/${klienId}`, "DELETE");
+            alert("Klien berhasil dinonaktifkan/dihapus!");
+            window.location.href = "daftar_client_admin.html"; // Redirect kembali ke daftar klien
+          } catch (error) {
+            alert("Gagal menghapus klien: " + error.message);
+            btnHapus.innerHTML = originalText;
+            btnHapus.disabled = false;
+          }
+        }
+      }
     </script>
   </body>
 </html>

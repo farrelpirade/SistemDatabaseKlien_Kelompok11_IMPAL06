@@ -109,7 +109,7 @@
       .form-label-custom {
         font-size: 11px;
         font-weight: 700;
-        color: #94a3b8;
+        color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 10px;
@@ -193,7 +193,7 @@
         <div class="d-flex align-items-center gap-2">
           <span class="text-muted small">Kontrak</span>
           <i class="bi bi-chevron-right text-muted" style="font-size: 10px"></i>
-          <span class="small fw-bold">Tambah Kontrak</span>
+          <span class="small fw-bold">Edit Kontrak</span>
         </div>
         <div class="d-flex align-items-center gap-3">
           <div id="header_initial" class="profile-circle-sm">--</div>
@@ -203,19 +203,15 @@
       <div class="row g-4">
         <div class="col-lg-8">
           <div class="content-card">
-            <h4 class="fw-bold mb-1">Informasi Kontrak Baru</h4>
-            <p class="text-muted small mb-5">
-              Lengkapi data di bawah ini untuk pendaftaran layanan baru.
-            </p>
+            <h4 class="fw-bold mb-1">Edit Informasi Kontrak</h4>
+            <p class="text-muted small mb-5">Atur perubahan kontrak</p>
 
             <form id="formTambahKontrak">
               <div class="mb-4">
-                <label class="form-label-custom">Pilih Klien</label>
-                <select class="form-select input-custom" id="input_klien">
-                  <option value="" selected disabled>
-                    -- Pilih Nama Klien --
-                  </option>
-                </select>
+                <label class="form-label-custom">Nama Klien</label>
+                <div class="form-select input-custom" id="input_klien">
+                  <i value="" selected disabled>Nama Klien</i>
+                </div>
               </div>
 
               <div class="row g-4 mb-4">
@@ -269,6 +265,7 @@
               <div class="d-flex justify-content-end gap-3 border-top pt-4">
                 <button
                   type="button"
+                  onclick="window.location.href = 'kontrak_admin.html'"
                   class="btn btn-link text-dark text-decoration-none fw-bold small"
                 >
                   Batal
@@ -361,91 +358,167 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Wajib panggil API -->
     <script src="js/api.js"></script>
     <script>
       const modalKonfirmasi = new bootstrap.Modal(
         document.getElementById("confirmModal"),
       );
+      const urlParams = new URLSearchParams(window.location.search);
+      const kontrakId = urlParams.get("id");
+      let currentKlienId = null;
 
-      // TAHAP 1: OTOMATIS AMBIL DATA KLIEN & PAKET SAAT HALAMAN DIBUKA
+      // Definisi Elemen Input
+      const inputPaket = document.getElementById("input_paket");
+      const inputModem = document.getElementById("input_modem");
+      const inputTglMulai = document.getElementById("input_tgl_mulai");
+      const inputTglSelesai = document.getElementById("input_tgl_selesai");
+      const inputHarga = document.getElementById("input_harga");
+
       document.addEventListener("DOMContentLoaded", async function () {
+        // Render Identitas User di Sidebar/Topbar
+        const userName = localStorage.getItem("user_name") || "Admin";
+        document.getElementById("header_initial").innerText = userName
+          .substring(0, 2)
+          .toUpperCase();
+        document.querySelector(".profile-widget .bg-primary").innerText =
+          userName.substring(0, 2).toUpperCase();
+        document.querySelector(".profile-widget .fw-bold.small").innerText =
+          userName;
+
+        if (!kontrakId) {
+          alert("ID Kontrak tidak valid!");
+          window.location.href = "kontrak_admin.html";
+          return;
+        }
+
         try {
-          // Ambil data klien dari database
-          const klienData = await fetchAPI("/api/klien", "GET");
-          const selectKlien = document.getElementById("input_klien");
-          klienData.forEach((klien) => {
-            selectKlien.innerHTML += `<option value="${klien.klienId}">${klien.namaKlien}</option>`;
-          });
-
-          // Ambil data paket dari database
+          // 1. Fetch data master Paket & Render Dropdown
           const paketData = await fetchAPI("/api/paket", "GET");
-          const selectPaket = document.getElementById("input_paket");
-          paketData.forEach((paket) => {
-            // Simpan harga di atribut "data-harga" agar mudah dipanggil
-            selectPaket.innerHTML += `<option value="${paket.paketId}" data-harga="${paket.harga}">${paket.namaPaket} - Rp ${paket.harga.toLocaleString("id-ID")}</option>`;
+          paketData.forEach((p) => {
+            inputPaket.innerHTML += `<option value="${p.paketId}" data-harga="${p.harga}">${p.namaPaket} - Rp ${p.harga.toLocaleString("id-ID")}/bln</option>`;
           });
 
-          // Isi dropdown Modem (Statis dari database ID)
-          document.getElementById("input_modem").innerHTML +=
-            `<option value="1">Sewa Modem</option><option value="2">Beli Modem</option>`;
+          // 2. Render Dropdown Modem dengan logika Biaya
+          inputModem.innerHTML += `
+                    <option value="1">Sewa Modem (+ Rp 50.000/bln)</option>
+                    <option value="2">Beli Modem (Flat Rp 200.000)</option>
+                `;
+
+          // 3. Fetch Data Kontrak Spesifik
+          const kontrak = await fetchAPI(`/api/kontrak/${kontrakId}`, "GET");
+          currentKlienId = kontrak.klienId;
+
+          // 4. Fetch Nama Klien & Kunci Field agar Read-Only
+          const klien = await fetchAPI(`/api/klien/${currentKlienId}`, "GET");
+          document.getElementById("input_klien").innerText =
+            klien.namaKlien + " (" + klien.email + ")";
+          document
+            .getElementById("input_klien")
+            .classList.add("fw-bold", "text-dark", "bg-light");
+
+          // 5. Masukkan data ke dalam form
+          inputPaket.value = kontrak.paketId;
+          inputModem.value = kontrak.tipeModemId;
+          inputTglMulai.value = kontrak.tanggalMulai;
+          inputTglSelesai.value = kontrak.tanggalSelesai;
+
+          // Panggil fungsi kalkulasi setelah semua data form terisi
+          calculateTotal();
         } catch (error) {
-          console.error("Gagal memuat data awal:", error);
+          alert("Gagal memuat detail kontrak: " + error.message);
         }
       });
 
-      // TAHAP 2: AUTTO-FILL HARGA KETIKA PAKET DIPILIH
-      document
-        .getElementById("input_paket")
-        .addEventListener("change", function () {
-          const selectedOption = this.options[this.selectedIndex];
-          const harga = selectedOption.getAttribute("data-harga");
+      // FUNGSI KALKULASI HARGA (SEWA vs BELI)
+      function calculateTotal() {
+        // Ambil harga paket per bulan
+        const selectedPaket = inputPaket.options[inputPaket.selectedIndex];
+        const hargaPaket = selectedPaket
+          ? parseFloat(selectedPaket.getAttribute("data-harga") || 0)
+          : 0;
 
-          if (harga) {
-            document.getElementById("input_harga").value = harga; // Isi form input harga
-            document.getElementById("summary_total_biaya").innerText =
-              `Rp ${parseInt(harga).toLocaleString("id-ID")}`; // Isi ringkasan kanan
-          }
-        });
+        // Hitung durasi (Bulan) dari tanggal
+        let durasiBulan = 0;
+        if (inputTglMulai.value && inputTglSelesai.value) {
+          const startDate = new Date(inputTglMulai.value);
+          const endDate = new Date(inputTglSelesai.value);
 
-      // TAHAP 3: MUNCULKAN MODAL KONFIRMASI
-      function triggerConfirm() {
-        // Validasi simpel sebelum modal muncul
-        if (
-          !document.getElementById("input_klien").value ||
-          !document.getElementById("input_paket").value
-        ) {
-          alert("Harap lengkapi pilihan Klien dan Paket!");
-          return;
+          durasiBulan = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+          durasiBulan -= startDate.getMonth();
+          durasiBulan += endDate.getMonth();
+
+          if (durasiBulan <= 0) durasiBulan = 1; // Cegah durasi minus/nol
         }
+
+        // Kalkulasi Biaya Modem (Sewa dikali bulan, Beli hanya flat)
+        const modemId = parseInt(inputModem.value);
+        let totalBiayaModem = 0;
+
+        if (modemId === 1) {
+          totalBiayaModem = 50000 * durasiBulan; // Biaya Sewa
+        } else if (modemId === 2) {
+          totalBiayaModem = 200000; // Biaya Beli Flat
+        }
+
+        // Kalkulasi Total Keseluruhan
+        const totalBiayaPaket = hargaPaket * durasiBulan;
+        const totalHarga = totalBiayaPaket + totalBiayaModem;
+        const ppn = totalHarga * 0.11; // Hitung PPN 11%
+
+        // Update data ke UI
+        inputHarga.value = totalHarga;
+        document.getElementById("summary_total_biaya").innerText =
+          `Rp ${totalHarga.toLocaleString("id-ID")}`;
+        document.getElementById("summary_durasi").innerText =
+          `${durasiBulan} Bulan`;
+        document.getElementById("summary_ppn").innerText =
+          `Rp ${ppn.toLocaleString("id-ID")}`;
+      }
+
+      // Pasang Event Listener agar fungsi jalan setiap form diubah user
+      inputPaket.addEventListener("change", calculateTotal);
+      inputModem.addEventListener("change", calculateTotal);
+      inputTglMulai.addEventListener("change", calculateTotal);
+      inputTglSelesai.addEventListener("change", calculateTotal);
+
+      // Membuka Modal Konfirmasi
+      function triggerConfirm() {
         modalKonfirmasi.show();
       }
 
-      // TAHAP 4: KIRIM DATA KONTRAK (POST) SAAT KLIK "YA" DI MODAL
+      // Eksekusi Simpan Perubahan (PUT API)
       document
         .getElementById("btnConfirmYes")
         .addEventListener("click", async function () {
           modalKonfirmasi.hide();
 
+          // Ubah state tombol menjadi loading
+          const btnSubmit = document.querySelector(
+            '.btn-primary[onclick="triggerConfirm()"]',
+          );
+          const originalText = btnSubmit.innerHTML;
+          btnSubmit.innerHTML = "Menyimpan...";
+          btnSubmit.disabled = true;
+
           const payload = {
-            klienId: parseInt(document.getElementById("input_klien").value),
-            paketId: parseInt(document.getElementById("input_paket").value),
-            createdBy: parseInt(localStorage.getItem("user_id")), // ID Admin yang sedang login
-            tanggalMulai: document.getElementById("input_tgl_mulai").value,
-            tanggalSelesai: document.getElementById("input_tgl_selesai").value,
-            hargaKontrak: parseFloat(
-              document.getElementById("input_harga").value,
-            ),
-            tipeModemId: parseInt(document.getElementById("input_modem").value),
-            statusKontrakId: 1, // Kontrak baru otomatis statusnya 1 (Aktif)
+            klienId: currentKlienId,
+            paketId: parseInt(inputPaket.value),
+            createdBy: parseInt(localStorage.getItem("user_id")),
+            tanggalMulai: inputTglMulai.value,
+            tanggalSelesai: inputTglSelesai.value,
+            hargaKontrak: parseFloat(inputHarga.value),
+            tipeModemId: parseInt(inputModem.value),
+            statusKontrakId: 1, // Default status ke Aktif saat di-edit
           };
 
           try {
-            await fetchAPI("/api/kontrak", "POST", payload);
-            alert("Kontrak berhasil dibuat!");
-            window.location.href = "kontrak_admin.html";
+            await fetchAPI(`/api/kontrak/${kontrakId}`, "PUT", payload);
+            alert("Kontrak berhasil diperbarui!");
+            window.location.href = "kontrak_admin.html"; // Kembali ke daftar kontrak
           } catch (error) {
-            alert("Gagal membuat kontrak: " + error.message);
+            alert("Gagal memperbarui kontrak: " + error.message);
+            btnSubmit.innerHTML = originalText;
+            btnSubmit.disabled = false;
           }
         });
     </script>
