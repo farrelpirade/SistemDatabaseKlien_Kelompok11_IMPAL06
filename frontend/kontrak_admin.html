@@ -253,7 +253,12 @@
     async function loadDaftarKontrak() {
         const tbody = document.getElementById("table_body");
         try {
-            const daftarKontrak = await fetchAPI("/api/kontrak", "GET");
+            // PERBAIKAN: Gunakan Promise.all untuk mengambil data "semua kontrak" dan "kontrak hampir habis" sekaligus
+            const [daftarKontrak, kontrakWarningData] = await Promise.all([
+                fetchAPI("/api/kontrak", "GET"),
+                fetchAPI("/api/kontrak/hampir-habis", "GET")
+            ]);
+            
             tbody.innerHTML = "";
 
             if (daftarKontrak.length === 0) {
@@ -291,7 +296,10 @@
             // Update nilai metrik di Card Atas
             document.getElementById("stat_total").innerText = kontrakAktifCount;
             document.getElementById("stat_revenue").innerText = "Rp " + totalRevenue.toLocaleString('id-ID');
-            document.getElementById("stat_warning").innerText = daftarKontrak.length - kontrakAktifCount;
+            
+            // PERBAIKAN: Gunakan panjang data dari API /hampir-habis, bukan kalkulasi manual yang salah
+            document.getElementById("stat_warning").innerText = kontrakWarningData.length; 
+            
             document.getElementById("stat_durasi").innerText = "6-12 Bln";
 
             // Update text footer data info count
