@@ -375,6 +375,54 @@
           document.getElementById("stat_kontrak_warning").innerText =
             kontrakWarningData.length;
 
+          const warningListContainer = document.getElementById(
+            "kontrak_warning_list",
+          );
+          warningListContainer.innerHTML = ""; // Bersihkan teks default
+
+          if (kontrakWarningData.length === 0) {
+            warningListContainer.innerHTML =
+              "Belum ada data kontrak yang mendekati batas waktu.";
+            warningListContainer.classList.add("text-muted", "py-3");
+          } else {
+            warningListContainer.classList.remove("text-muted", "py-3");
+            let warningHTML = `
+              <div class="table-responsive">
+                  <table class="table align-middle">
+                      <thead>
+                          <tr>
+                              <th>ID KONTRAK</th>
+                              <th>NAMA KLIEN</th>
+                              <th>TANGGAL BERAKHIR</th>
+                              <th>STATUS</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+              `;
+
+            kontrakWarningData.forEach((kontrak) => {
+              // Cari nama klien berdasarkan klienId dari data klienData yang di-fetch di atasnya
+              const matchedKlien = klienData.find(
+                (k) => k.klienId === kontrak.klienId,
+              );
+              const namaKlien = matchedKlien
+                ? matchedKlien.namaKlien
+                : `Klien ID: ${kontrak.klienId}`;
+
+              warningHTML += `
+                          <tr>
+                              <td><span class="fw-bold text-primary">#KTR-${kontrak.kontrakId}</span></td>
+                              <td><span class="fw-bold text-dark">${namaKlien}</span></td>
+                              <td><span class="text-danger fw-bold"><i class="bi bi-clock-history me-1"></i> ${kontrak.tanggalSelesai}</span></td>
+                              <td><span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill">Warning</span></td>
+                          </tr>
+                  `;
+            });
+
+            warningHTML += `</tbody></table></div>`;
+            warningListContainer.innerHTML = warningHTML;
+          }
+
           // C. Fetch Data Laporan (Distribusi Paket)
           const laporanData = await fetchAPI("/api/laporan", "GET");
 
