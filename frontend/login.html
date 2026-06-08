@@ -167,9 +167,6 @@
 
         <div class="col-md-6 right-panel">
           <div class="w-100" style="max-width: 460px">
-            <span class="badge-portal">
-              <i class="bi bi-shield-check me-2"></i> PORTAL MASUK
-            </span>
             <h2
               class="fw-bold mb-2"
               style="font-size: 32px; letter-spacing: -0.5px"
@@ -180,28 +177,7 @@
               Masukkan kredensial Anda untuk melanjutkan ke sistem
             </p>
 
-            <div class="role-switcher">
-              <button
-                type="button"
-                id="btn-admin"
-                class="role-btn active"
-                onclick="switchRole('admin')"
-              >
-                <i class="bi bi-person-fill me-2"></i>Admin
-              </button>
-              <button
-                type="button"
-                id="btn-manager"
-                class="role-btn"
-                onclick="switchRole('manager')"
-              >
-                <i class="bi bi-people-fill me-2"></i>Manager
-              </button>
-            </div>
-
             <form id="loginForm">
-              <input type="hidden" id="selected-role" value="admin" />
-
               <div class="mb-3">
                 <label class="form-label">USERNAME</label>
                 <div class="input-group">
@@ -282,7 +258,7 @@
               </button>
             </form>
 
-            <div class="info-box" id="role-info">
+            <div class="info-box">
               <i class="bi bi-info-circle-fill text-primary fs-5"></i>
               <span
                 >Akun Admin dibuat oleh Manager. Hubungi manager Anda jika belum
@@ -294,33 +270,8 @@
       </div>
     </div>
 
-    <!-- Panggil helper API di file terpisah -->
     <script src="js/api.js"></script>
     <script>
-      /**
-       * FUNGSI SWITCH ROLE
-       */
-      function switchRole(role) {
-        const btnAdmin = document.getElementById("btn-admin");
-        const btnManager = document.getElementById("btn-manager");
-        const roleInput = document.getElementById("selected-role");
-        const infoBox = document.querySelector("#role-info span");
-
-        if (role === "admin") {
-          btnAdmin.classList.add("active");
-          btnManager.classList.remove("active");
-          roleInput.value = "admin";
-          infoBox.innerText =
-            "Akun Admin dibuat oleh Manager. Hubungi manager Anda jika belum memiliki akses.";
-        } else {
-          btnManager.classList.add("active");
-          btnAdmin.classList.remove("active");
-          roleInput.value = "manager";
-          infoBox.innerText =
-            "Portal khusus Manager untuk melihat laporan statistik dan performa jaringan.";
-        }
-      }
-
       /**
        * TOGGLE SHOW/HIDE PASSWORD
        */
@@ -329,12 +280,9 @@
       const eyeIcon = document.querySelector("#eyeIcon");
 
       togglePassword.addEventListener("click", function () {
-        // Toggle tipe input
         const type =
           password.getAttribute("type") === "password" ? "text" : "password";
         password.setAttribute("type", type);
-
-        // Toggle ikon (mata terbuka / mata tertutup)
         eyeIcon.classList.toggle("bi-eye");
         eyeIcon.classList.toggle("bi-eye-slash");
       });
@@ -349,7 +297,6 @@
 
           const usernameInput = document.getElementById("username").value;
           const passwordInput = document.getElementById("password").value;
-          const roleDipilih = document.getElementById("selected-role").value;
 
           // Ubah UI tombol jadi loading
           const btnSubmit = document.querySelector(".btn-masuk");
@@ -359,7 +306,7 @@
           btnSubmit.disabled = true;
 
           try {
-            // Panggil API Login (Memanggil fungsi dari file js/api.js)
+            // Panggil API Login
             const response = await fetchAPI("/api/auth/login", "POST", {
               username: usernameInput,
               password: passwordInput,
@@ -369,13 +316,11 @@
             localStorage.setItem("jwt_token", response.token);
             localStorage.setItem("user_name", response.nama);
             localStorage.setItem("user_role", response.role);
-
-            // Menyimpan userId hasil dari response backend
             localStorage.setItem("user_id", response.userId);
 
             alert(`Selamat datang, ${response.nama}!`);
 
-            // Arahkan sesuai role dari database
+            // Arahkan sesuai role dari database secara otomatis
             if (response.role === "Manager") {
               window.location.href = "dashboard_manager.html";
             } else {
